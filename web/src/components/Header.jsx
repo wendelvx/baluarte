@@ -81,7 +81,7 @@ export default function Header() {
                 <button
                   key={link.name}
                   onClick={() => handleScroll(link.target)}
-                  className="text-slate-600 font-medium hover:text-emerald-700 transition"
+                  className="text-slate-600 font-medium hover:text-emerald-700 transition cursor-pointer"
                 >
                   {link.name}
                 </button>
