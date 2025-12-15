@@ -17,21 +17,23 @@ export default function Header() {
   useEffect(() => {
     const query = '*[_type == "homePage"][0]{ logo }'
 
-    client
-      .fetch(query)
-      .then((data) => {
-        if (data?.logo) {
-          setLogoUrl(
-            urlFor(data.logo)
-              .width(360)
-              .auto('format')
-              .quality(90)
-              .url()
-          )
-        }
-      })
-      .catch(console.error)
+    client.fetch(query).then((data) => {
+      if (data?.logo) {
+        setLogoUrl(
+          urlFor(data.logo)
+            .width(360)
+            .auto('format')
+            .quality(90)
+            .url()
+        )
+      }
+    })
   }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : 'auto'
+    return () => (document.body.style.overflow = 'auto')
+  }, [isMenuOpen])
 
   const handleScroll = (target) => {
     setIsMenuOpen(false)
@@ -51,20 +53,14 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/85 backdrop-blur border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-24">
-          
+
           <button
             onClick={() => handleScroll('top')}
             className="relative flex items-center"
             aria-label="Ir para o início"
           >
             {!logoLoaded && (
-              <div className="
-                absolute
-                h-16 w-40
-                bg-slate-200
-                rounded-md
-                animate-pulse
-              " />
+              <div className="absolute h-16 w-44 bg-slate-200 rounded-md animate-pulse" />
             )}
 
             {logoUrl ? (
@@ -72,11 +68,9 @@ export default function Header() {
                 src={logoUrl}
                 alt="Logo Missão Baluarte"
                 onLoad={() => setLogoLoaded(true)}
-                className={`
-                  h-16 w-auto
-                  transition-opacity duration-500
-                  ${logoLoaded ? 'opacity-100' : 'opacity-0'}
-                `}
+                className={`h-16 w-auto transition-opacity duration-500 ${
+                  logoLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
               />
             ) : (
               <span className="text-3xl font-semibold text-emerald-700">
@@ -90,14 +84,7 @@ export default function Header() {
               <button
                 key={link.name}
                 onClick={() => handleScroll(link.target)}
-                className="
-                  text-slate-600
-                  text-base
-                  font-medium
-                  hover:text-emerald-700
-                  transition
-                  cursor-pointer
-                "
+                className="text-slate-600 font-medium hover:text-emerald-700 transition"
               >
                 {link.name}
               </button>
@@ -114,43 +101,58 @@ export default function Header() {
         </div>
       </div>
 
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm">
-          <div className="absolute top-0 right-0 w-4/5 max-w-sm h-full bg-white shadow-xl p-6">
-            <div className="flex justify-between items-center mb-8">
-              <span className="text-lg font-semibold text-slate-800">
-                Menu
-              </span>
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                className="p-2 rounded-md hover:bg-slate-100"
-                aria-label="Fechar menu"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+      <div
+        className={`
+          fixed inset-0 z-50
+          bg-black/40 backdrop-blur-sm
+          transition-opacity duration-300
+          ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+        `}
+        onClick={() => setIsMenuOpen(false)}
+      />
 
-            <nav className="flex flex-col gap-6">
-              {menuLinks.map((link) => (
-                <button
-                  key={link.name}
-                  onClick={() => handleScroll(link.target)}
-                  className="
-                    text-slate-700
-                    text-lg
-                    font-medium
-                    text-left
-                    hover:text-emerald-700
-                    transition
-                  "
-                >
-                  {link.name}
-                </button>
-              ))}
-            </nav>
-          </div>
+      <aside
+        className={`
+          fixed top-0 right-0 z-50
+          w-4/5 max-w-sm h-full
+          bg-white shadow-xl
+          p-6
+          transform transition-transform duration-300 ease-in-out
+          ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
+        `}
+      >
+        <div className="flex justify-between items-center mb-10">
+          <span className="text-lg font-semibold text-slate-800">
+            Menu
+          </span>
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="p-2 rounded-md hover:bg-slate-100"
+            aria-label="Fechar menu"
+          >
+            <X className="w-6 h-6" />
+          </button>
         </div>
-      )}
+
+        <nav className="flex flex-col gap-6">
+          {menuLinks.map((link) => (
+            <button
+              key={link.name}
+              onClick={() => handleScroll(link.target)}
+              className="
+                text-slate-700
+                text-lg
+                font-medium
+                text-left
+                hover:text-emerald-700
+                transition
+              "
+            >
+              {link.name}
+            </button>
+          ))}
+        </nav>
+      </aside>
     </header>
   )
 }
