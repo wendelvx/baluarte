@@ -5,7 +5,7 @@ import {
     Users,
     Stethoscope,
     GraduationCap,
-    HandsClapping
+    Clap
 } from 'lucide-react'
 
 export default function About() {
@@ -66,9 +66,9 @@ export default function About() {
                         <Card icon={<BookOpen />} title="Ação Social e Fé">
                             Evangelismo, discipulado, almoço comunitário e Mercado Social.
                         </Card>
-                        <Card icon={<HandsClapping />} title="Voluntariado e Impacto">
-                            Contribua como voluntário em atividades educativas, sociais e de apoio à comunidade, transformando vidas no sertão.
-                        </Card>
+                        <Card icon={<Clap />} title="Voluntariado e Impacto">
+  Contribua como voluntário em atividades educativas, sociais e de apoio à comunidade, transformando vidas no sertão.
+</Card>
                     </div>
                 </div>
             </div>
