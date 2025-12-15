@@ -5,7 +5,7 @@ import {
     Users,
     Stethoscope,
     GraduationCap,
-    LuUsers,
+    Handshake,
 } from 'lucide-react'
 
 export default function About() {
@@ -67,7 +67,7 @@ export default function About() {
                             Evangelismo, discipulado, almoço comunitário e Mercado Social.
                         </Card>
                         
-<Card icon={<LuUsers />} title="Voluntariado e Impacto">
+<Card icon={<Handshake/>} title="Voluntariado e Impacto">
   Contribua como voluntário em atividades educativas, sociais e de apoio à 
   comunidade, transformando vidas no sertão.
 </Card>
