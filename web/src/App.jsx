@@ -11,21 +11,28 @@ function App() {
   const [homeData, setHomeData] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const query = '*[_type == "homePage"][0]'
+ useEffect(() => {
+  const query = '*[_type == "homePage"][0]'
 
-    client
-      .fetch(query)
-      .then((data) => {
-        setHomeData(data)
-      })
-      .catch((error) => {
-        console.error('Erro ao buscar dados do Sanity:', error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [])
+  client
+    .fetch(query)
+    .then((data) => {
+      console.log('DADOS DO SANITY:', data)
+
+      if (!data) {
+        throw new Error('Documento homePage não encontrado ou não publicado')
+      }
+
+      setHomeData(data)
+    })
+    .catch((error) => {
+      console.error('🔥 ERRO REAL DO SANITY:', error)
+      alert(error.message)
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+}, [])
 
   if (loading) {
   return (
