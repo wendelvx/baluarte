@@ -146,7 +146,7 @@ export default function Header() {
                 text-left
                 hover:text-emerald-700
                 transition
-                cursor-pointer
+                
               "
             >
               {link.name}
