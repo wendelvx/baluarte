@@ -1,107 +1,174 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { urlFor } from '../sanity'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-export default function Hero({ images }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  const [isHovered, setIsHovered] = useState(false);
+export default function Hero({ images = [] }) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+  const [loaded, setLoaded] = useState({})
 
-  if (!images) {
+  if (!images.length) {
     return (
-      <div className="w-full h-[300px] md:h-[450px] bg-gray-200 flex items-center justify-center text-gray-500">
-        Carregando...
+      <div className="w-full h-[260px] md:h-[420px] bg-slate-100 flex items-center justify-center animate-pulse text-slate-500">
+        Carregando galeria...
       </div>
-    );
+    )
+  }
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) =>
+      prev === images.length - 1 ? 0 : prev + 1
+    )
   }
 
   const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
-  };
-
-  const nextSlide = () => {
-    const isLastSlide = currentIndex === images.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
-  };
+    setCurrentIndex((prev) =>
+      prev === 0 ? images.length - 1 : prev - 1
+    )
+  }
 
   useEffect(() => {
-    if (isHovered) return;
-
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [currentIndex, isHovered]); // Recria o timer sempre que o índice ou o estado de hover mudar
+    if (isHovered) return
+    const interval = setInterval(nextSlide, 4000)
+    return () => clearInterval(interval)
+  }, [currentIndex, isHovered])
 
   return (
     <section
-      id="hero"
-      // Adicionamos os eventos de Mouse para controlar o pause
+      className="relative w-full overflow-hidden bg-slate-100"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative w-full h-[300px] md:h-[450px] bg-gray-200 group"
     >
-      <div className="w-full h-full overflow-hidden relative">
-        
-        <div 
-          className="w-full h-full flex transition-transform duration-700 ease-out" // Aumentei para 700ms para ficar mais suave
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-        >
-          {images.map((img, index) => (
+      <div
+        className="flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {images.map((img, index) => {
+          const dimensions = img?.asset?.metadata?.dimensions
+          const isVertical =
+            dimensions && dimensions.height > dimensions.width
+
+          const isLoaded = loaded[index]
+
+          return (
             <div
               key={img._key || index}
-              className="min-w-full h-full relative"
+              className="min-w-full h-[260px] md:h-[420px] relative bg-slate-200"
             >
+              {isVertical && (
+                <img
+                  src={urlFor(img)
+                    .width(1600)
+                    .fit('crop')
+                    .auto('format')
+                    .quality(35)
+                    .url()}
+                  aria-hidden
+                  className={`
+                    hidden md:block
+                    absolute inset-0
+                    w-full h-full
+                    object-cover
+                    blur-xl scale-105
+                    transition-opacity duration-700
+                    ${isLoaded ? 'opacity-100' : 'opacity-0'}
+                  `}
+                />
+              )}
+
               <img
-                src={img?.asset ? urlFor(img).width(1280).height(600).url() : ''}
-                alt={`Slide ${index + 1}`}
-                className="w-full h-full object-cover"
+                src={urlFor(img)
+                  .width(1400)
+                  .fit('max')
+                  .auto('format')
+                  .quality(80)
+                  .url()}
+                alt={img.caption || `Slide ${index + 1}`}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                onLoad={() =>
+                  setLoaded((prev) => ({ ...prev, [index]: true }))
+                }
+                className={`
+                  relative z-10
+                  w-full h-full
+                  object-contain object-center
+                  transition-opacity duration-700
+                  ${isLoaded ? 'opacity-100' : 'opacity-0'}
+                `}
               />
 
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                <h2 className="text-white text-2xl md:text-4xl font-bold px-4 text-center max-w-4xl drop-shadow-lg select-none">
-                  Juntos fazemos a diferença
-                </h2>
-              </div>
+              {img.caption && (
+                <div className="
+                  absolute inset-0 z-20
+                  bg-gradient-to-t
+                  from-slate-900/55
+                  via-slate-900/25
+                  to-transparent
+                  flex items-end justify-center
+                  pb-6
+                ">
+                  <p className="
+                    text-white
+                    text-sm md:text-xl
+                    font-medium
+                    px-6
+                    max-w-4xl
+                    text-center
+                    leading-relaxed
+                  ">
+                    {img.caption}
+                  </p>
+                </div>
+              )}
             </div>
-          ))}
-        </div>
+          )
+        })}
       </div>
 
-      
-      <button 
+      <button
         onClick={prevSlide}
-        className="absolute top-1/2 left-4 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition cursor-pointer z-10 hidden group-hover:block" // group-hover:block faz a seta aparecer só quando passa o rato
+        aria-label="Imagem anterior"
+        className="
+          absolute left-3 top-1/2 -translate-y-1/2 z-30
+          bg-white/80 hover:bg-white
+          rounded-full p-2
+          shadow-md
+          transition
+        "
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-        </svg>
+        <ChevronLeft className="w-5 h-5 text-slate-700" />
       </button>
 
-      <button 
+      {/* SETA DIREITA */}
+      <button
         onClick={nextSlide}
-        className="absolute top-1/2 right-4 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition cursor-pointer z-10 hidden group-hover:block"
+        aria-label="Próxima imagem"
+        className="
+          absolute right-3 top-1/2 -translate-y-1/2 z-30
+          bg-white/80 hover:bg-white
+          rounded-full p-2
+          shadow-md
+          transition
+        "
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
+        <ChevronRight className="w-5 h-5 text-slate-700" />
       </button>
 
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-10">
+      <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-30">
         {images.map((_, index) => (
-          <div
+          <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`cursor-pointer w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              currentIndex === index ? 'bg-white w-4' : 'bg-white/50'
-            }`}
-          ></div>
+            className={`
+              h-1.5 rounded-full transition-all duration-300
+              ${currentIndex === index
+                ? 'w-6 bg-slate-500'
+                : 'w-2 bg-slate-300 hover:bg-slate-400'}
+            `}
+            aria-label={`Ir para slide ${index + 1}`}
+          />
         ))}
       </div>
-
     </section>
   )
 }
