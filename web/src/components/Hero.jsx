@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { urlFor } from '../sanity'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function Hero({ images = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isHovered, setIsHovered] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
   const [loaded, setLoaded] = useState({})
+
+  const startX = useRef(0)
+  const endX = useRef(0)
+  const heroRef = useRef(null)
+
+  const isTouchDevice =
+    typeof window !== 'undefined' &&
+    ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
   if (!images.length) {
     return (
@@ -16,28 +25,62 @@ export default function Hero({ images = [] }) {
   }
 
   const nextSlide = () => {
+    setIsPaused(true)
     setCurrentIndex((prev) =>
       prev === images.length - 1 ? 0 : prev + 1
     )
   }
 
   const prevSlide = () => {
+    setIsPaused(true)
     setCurrentIndex((prev) =>
       prev === 0 ? images.length - 1 : prev - 1
     )
   }
 
   useEffect(() => {
-    if (isHovered) return
-    const interval = setInterval(nextSlide, 4000)
+    if (isPaused || !isVisible) return
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) =>
+        prev === images.length - 1 ? 0 : prev + 1
+      )
+    }, 4000)
+
     return () => clearInterval(interval)
-  }, [currentIndex, isHovered])
+  }, [isPaused, isVisible])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.4 }
+    )
+
+    if (heroRef.current) observer.observe(heroRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e) => {
+    endX.current = e.changedTouches[0].clientX
+    const diff = startX.current - endX.current
+
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? nextSlide() : prevSlide()
+    }
+  }
 
   return (
     <section
+      ref={heroRef}
       className="relative w-full overflow-hidden bg-slate-100"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => !isTouchDevice && setIsPaused(true)}
+      onMouseLeave={() => !isTouchDevice && setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <div
         className="flex transition-transform duration-700 ease-in-out"
@@ -98,24 +141,8 @@ export default function Hero({ images = [] }) {
               />
 
               {img.caption && (
-                <div className="
-                  absolute inset-0 z-20
-                  bg-gradient-to-t
-                  from-slate-900/55
-                  via-slate-900/25
-                  to-transparent
-                  flex items-end justify-center
-                  pb-6
-                ">
-                  <p className="
-                    text-white
-                    text-sm md:text-xl
-                    font-medium
-                    px-6
-                    max-w-4xl
-                    text-center
-                    leading-relaxed
-                  ">
+                <div className="absolute inset-0 z-20 bg-gradient-to-t from-slate-900/55 via-slate-900/25 to-transparent flex items-end justify-center pb-6">
+                  <p className="text-white text-sm md:text-xl font-medium px-6 max-w-4xl text-center leading-relaxed">
                     {img.caption}
                   </p>
                 </div>
@@ -127,29 +154,16 @@ export default function Hero({ images = [] }) {
 
       <button
         onClick={prevSlide}
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
         aria-label="Imagem anterior"
-        className="
-          absolute left-3 top-1/2 -translate-y-1/2 z-30
-          bg-white/80 hover:bg-white
-          rounded-full p-2
-          shadow-md
-          transition
-        "
       >
         <ChevronLeft className="w-5 h-5 text-slate-700" />
       </button>
 
-      {/* SETA DIREITA */}
       <button
         onClick={nextSlide}
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
         aria-label="Próxima imagem"
-        className="
-          absolute right-3 top-1/2 -translate-y-1/2 z-30
-          bg-white/80 hover:bg-white
-          rounded-full p-2
-          shadow-md
-          transition
-        "
       >
         <ChevronRight className="w-5 h-5 text-slate-700" />
       </button>
@@ -158,7 +172,10 @@ export default function Hero({ images = [] }) {
         {images.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => {
+              setIsPaused(true)
+              setCurrentIndex(index)
+            }}
             className={`
               h-1.5 rounded-full transition-all duration-300
               ${currentIndex === index
