@@ -4,7 +4,8 @@ import {
     Heart,
     Users,
     Stethoscope,
-    GraduationCap
+    GraduationCap,
+    HandsClapping
 } from 'lucide-react'
 
 export default function About() {
