@@ -64,20 +64,16 @@ export default function Header() {
                 </div>
               )}
 
-              {logoUrl ? (
-                <img
-                  src={logoUrl}
-                  alt="Logo Missão Baluarte"
-                  onLoad={() => setLogoLoaded(true)}
-                  className={`h-16 w-auto transition-opacity duration-500 ${
-                    logoLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
-                />
-              ) : (
-                <span className="text-2xl font-semibold text-emerald-700">
-                  Missão Baluarte
-                </span>
-              )}
+              {logoUrl && (
+    <img
+      src={logoUrl}
+      alt="Logo Missão Baluarte"
+      onLoad={() => setLogoLoaded(true)}
+      className={`h-16 w-auto transition-opacity duration-500 ${
+        logoLoaded ? 'opacity-100' : 'opacity-0'
+      }`}
+    />
+  )}
             </button>
 
             <nav className="hidden md:flex items-center gap-12">
