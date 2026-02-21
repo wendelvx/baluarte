@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { motion, useScroll, useSpring } from 'framer-motion'
+import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 import { client } from './sanity'
 
 // Componentes Refatorados
 import Header from './components/Header'
 import Hero from './components/Hero'
-import Manifesto from './components/Manifesto' // Antigo About
-import VolunteerCall from './components/VolunteerCall' // Antigo Volunteer
+import Manifesto from './components/Manifesto'
+import VolunteerCall from './components/VolunteerCall'
 import ShopTeaser from './components/ShopTeaser'
 import Footer from './components/Footer'
 
@@ -32,20 +32,37 @@ function App() {
         setHomeData(data)
       })
       .catch((error) => console.error('Erro Sanity:', error))
-      .finally(() => setLoading(false))
+      .finally(() => {
+        // Pequeno delay para garantir que a transição do loading seja suave
+        setTimeout(() => setLoading(false), 800)
+      })
   }, [])
 
-  // Skeleton Loading Premium
+  // Skeleton Loading Premium & Humilde
   if (loading) {
     return (
-      <div className="bg-baluarte-bg min-h-screen flex flex-col items-center justify-center">
+      <div className="bg-baluarte-bg min-h-screen flex flex-col items-center justify-center p-8 text-center">
         <motion.div 
-          animate={{ opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="flex flex-col items-center"
         >
-          <div className="w-16 h-16 border-4 border-baluarte-luz/20 border-t-baluarte-luz rounded-full animate-spin mb-4" />
-          <p className="font-serif italic text-baluarte-vida tracking-widest">Sustentando promessas...</p>
+          {/* Spinner elegante nas cores da marca */}
+          <div className="w-16 h-16 border-4 border-baluarte-luz/20 border-t-baluarte-vida rounded-full animate-spin mb-8 shadow-2xl shadow-baluarte-vida/10" />
+          
+          {/* Mensagem de Impacto Suave */}
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <p className="font-serif italic text-baluarte-vida text-2xl md:text-3xl tracking-wide leading-tight">
+              Semeando o amor
+            </p>
+            <span className="text-baluarte-luz font-sans text-[10px] uppercase tracking-[0.5em] font-bold mt-3 block antialiased">
+              que transforma vidas
+            </span>
+          </motion.div>
         </motion.div>
       </div>
     )

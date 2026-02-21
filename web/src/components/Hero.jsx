@@ -49,9 +49,9 @@ export default function Hero({ images = [] }) {
         </AnimatePresence>
       </motion.div>
 
-      {/* Scrims de Proteção Editorial */}
-      <div className="absolute inset-0 z-10 bg-black/40" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/70 via-transparent to-baluarte-bg" />
+      {/* Scrims de Proteção Editorial - Mantidos para contraste geral */}
+      <div className="absolute inset-0 z-10 bg-black/30" /> {/* Reduzi um pouco de 40% para 30% */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-transparent to-baluarte-bg" />
 
       {/* Conteúdo Centralizado Responsivo com Ajuste de Header (pt-24 md:pt-32) */}
       <motion.div 
@@ -63,27 +63,36 @@ export default function Hero({ images = [] }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="text-baluarte-luz font-sans text-[10px] md:text-xs uppercase mb-4 md:mb-6 font-bold tracking-[0.4em] md:tracking-[0.6em]"
+          className="text-baluarte-luz font-sans text-[10px] md:text-xs uppercase mb-4 md:mb-6 font-bold tracking-[0.4em] md:tracking-[0.6em] drop-shadow-lg"
         >
           Um encontro que muda destinos
         </motion.span>
 
-        {/* Título Principal */}
+        {/* Título Principal - Com Drop Shadow para leitura sem box */}
         <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white leading-[1.1] mb-6 md:mb-8 drop-shadow-2xl">
           Ninguém nasce para <br /> 
           <span className="italic text-baluarte-luz font-normal">ser esquecido por Deus.</span>
         </h1>
 
-        {/* Bloco de Texto (Box de Leitura) */}
-        <div className="relative inline-block w-full max-w-3xl px-4 md:px-10 py-6 md:py-8 mb-8 md:mb-12">
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-md rounded-2xl md:rounded-[2.5rem] -z-10 border border-white/10" />
+        {/* --- SOLUÇÃO ELEGANTE PARA O BLOCO DE TEXTO --- */}
+        <div className="relative inline-block w-full max-w-3xl px-6 md:px-12 py-8 md:py-10 mb-8 md:mb-12 group">
           
-          <p className="font-sans text-white text-base md:text-xl lg:text-2xl leading-relaxed antialiased opacity-90">
+          {/* Camada 1: Blur Extremo e Cor Super Sutil (Vidro) */}
+          {/* Removi a borda, aumentei o blur para 'xl', mudei a cor para o bg da marca muito transparente */}
+          <div className="absolute inset-0 bg-[#050505]/20 backdrop-blur-2xl rounded-3xl md:rounded-[3rem] -z-20 transition-all duration-1000 group-hover:bg-[#050505]/30" />
+          
+          {/* Camada 2: Gradiente Suave nas Bordas (Vignette Interna) */}
+          {/* Isso faz com que as bordas superior/inferior do "vidro" desapareçam suavemente */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/10 to-transparent rounded-3xl md:rounded-[3rem] -z-10" />
+          
+          {/* O Texto com Drop Shadow para contraste direto */}
+          <p className="font-sans text-white text-base md:text-xl lg:text-2xl leading-relaxed antialiased drop-shadow-lg relative z-10">
             Cada criança é uma promessa sagrada que espera por alguém que a veja de verdade. 
             <span className="hidden sm:inline text-baluarte-luz font-medium"> A Missão Baluarte devolve </span> 
             o direito de pertencer, de sorrir e de ser amado.
           </p>
         </div>
+        {/* --------------------------------------------- */}
 
         {/* CTA Premium */}
         <motion.div
@@ -93,7 +102,7 @@ export default function Hero({ images = [] }) {
           className="w-full flex flex-col items-center"
         >
           <a
-            href={`https://wa.me/558899990250?text=${encodeURIComponent(
+            href={`https://wa.me/5588982228665?text=${encodeURIComponent(
               "Olá! Estive no site da Missão Baluarte e senti meu coração tocado. Quero abraçar esta causa e entender como posso ajudar!"
             )}`}
             target="_blank"
@@ -110,14 +119,12 @@ export default function Hero({ images = [] }) {
             <ArrowRight size={16} className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </a>
           
-          <p className="font-sans text-white/40 text-[9px] md:text-[10px] mt-4 md:mt-6 uppercase tracking-[0.3em]">
-            Onde o seu sim encontra a vida deles.
-          </p>
+          
         </motion.div>
       </motion.div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center gap-3">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center gap-3 drop-shadow-lg">
          <span className="text-white/20 text-[9px] uppercase tracking-[0.4em]">Scroll</span>
          <div className="w-[1px] h-12 bg-gradient-to-b from-white/20 via-baluarte-luz to-transparent relative overflow-hidden">
             <motion.div 
