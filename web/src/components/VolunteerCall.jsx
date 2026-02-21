@@ -1,70 +1,89 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { HeartHandshake } from 'lucide-react'
+import { HeartHandshake, Sparkles } from 'lucide-react'
 
 export default function VolunteerCall() {
   return (
     <section id="volunteer" className="relative py-0 bg-baluarte-bg overflow-hidden">
-      <div className="flex flex-col md:flex-row min-h-[600px]">
+      <div className="flex flex-col md:flex-row min-h-[650px]">
         
-        {/* Lado Esquerdo: Imagem com Impacto (Split Layout) */}
+        {/* Lado Esquerdo: O Olhar do Impacto */}
         <motion.div 
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="md:w-1/2 relative h-[400px] md:h-auto"
+          initial={{ opacity: 0, scale: 1.1 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          className="md:w-1/2 relative h-[450px] md:h-auto overflow-hidden"
         >
           <img 
-            src="/images/volunteercall.webp" // Substitua pela imagem do Sanity
-            alt="Mãos que transformam"
-            className="absolute inset-0 w-full h-full object-cover"
+            src="/images/volunteercall.webp" 
+            alt="O brilho da esperança"
+            className="absolute inset-0 w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-1000"
           />
-          {/* Overlay suave para integrar com o fundo */}
-          <div className="absolute inset-0 bg-baluarte-vida/10" />
+          {/* Overlay Quente para unificar com a paleta */}
+          <div className="absolute inset-0 bg-gradient-to-r from-baluarte-vida/20 to-transparent" />
         </motion.div>
 
-        {/* Lado Direito: O Convite (Texto e Ação) */}
-        <div className="md:w-1/2 flex items-center justify-center p-12 md:p-24">
+        {/* Lado Direito: O Convite Irresistível */}
+        <div className="md:w-1/2 flex items-center justify-center p-10 md:p-24 bg-white">
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-md text-center md:text-left"
+            transition={{ duration: 1, delay: 0.2 }}
+            className="max-w-lg text-center md:text-left"
           >
-            <div className="flex justify-center md:justify-start mb-6">
-              <div className="bg-white p-4 rounded-full shadow-sm ring-1 ring-baluarte-luz/20">
-                <HeartHandshake className="w-8 h-8 text-baluarte-vida" />
+            <div className="flex justify-center md:justify-start mb-8">
+              <div className="relative">
+                <div className="absolute inset-0 bg-baluarte-luz/20 blur-xl rounded-full" />
+                <div className="relative bg-white p-4 rounded-full shadow-sm ring-1 ring-baluarte-luz/20">
+                  <HeartHandshake className="w-8 h-8 text-baluarte-vida" />
+                </div>
               </div>
             </div>
 
-            <h2 className="text-3xl md:text-5xl font-serif text-baluarte-vida mb-8 leading-tight">
-              Seja o sustento de uma <span className="italic">nova história.</span>
+            <h2 className="text-4xl md:text-6xl font-serif text-baluarte-vida mb-8 leading-[1.1]">
+              Não mude o mundo. <br />
+              <span className="italic text-baluarte-luz">Mude o mundo de alguém.</span>
             </h2>
 
-            <p className="text-lg text-baluarte-text/80 font-sans mb-12 leading-relaxed">
-              O sertão não precisa de pena, precisa de baluartes. Pessoas que acreditam que o direito de sonhar 
-              começa com um prato de comida, uma aula de reforço e um abraço sincero.
-              <br /><br />
-              <span className="font-semibold text-baluarte-vida">Seu talento é a ferramenta, seu tempo é o milagre.</span>
-            </p>
+            <div className="space-y-6 text-lg text-baluarte-text/80 font-sans leading-relaxed mb-12">
+              <p>
+                Muitas vezes, a distância entre o desespero e a esperança é apenas um par de mãos dispostas. 
+                <span className="text-baluarte-vida font-medium"> Não buscamos heróis, buscamos humanidade.</span>
+              </p>
+              <p className="italic border-l-2 border-baluarte-luz/30 pl-4 py-1">
+                Seja doando seu conhecimento, algumas horas do seu mês ou apenas o calor de um abraço: 
+                você é o milagre que alguém estava esperando.
+              </p>
+            </div>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center md:justify-start">
-              {/* Botão com Efeito de Pulso Suave */}
+            <div className="flex flex-col sm:flex-row gap-8 justify-center md:justify-start items-center">
+              {/* Botão Principal: O "Sim" Emocional */}
               <motion.a
                 href="https://forms.gle/your-form-link"
                 target="_blank"
                 rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 animate={{ 
-                  boxShadow: ["0px 0px 0px 0px rgba(212, 163, 115, 0)", "0px 0px 0px 15px rgba(212, 163, 115, 0.1)", "0px 0px 0px 0px rgba(212, 163, 115, 0)"] 
+                  boxShadow: ["0px 0px 0px 0px rgba(212, 163, 115, 0)", "0px 0px 0px 20px rgba(212, 163, 115, 0.1)", "0px 0px 0px 0px rgba(212, 163, 115, 0)"] 
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="bg-baluarte-vida text-white px-8 py-4 rounded-full font-medium shadow-xl hover:bg-baluarte-vida/90 transition-all flex items-center justify-center gap-2"
+                transition={{ duration: 3, repeat: Infinity }}
+                className="
+                  bg-baluarte-vida text-white 
+                  px-10 py-5 rounded-full 
+                  font-bold tracking-widest uppercase text-xs
+                  shadow-2xl shadow-baluarte-vida/20
+                  hover:bg-baluarte-vida/95 transition-all 
+                  flex items-center gap-3
+                "
               >
-                Quero ser voluntário
+                <Sparkles className="w-4 h-4 text-baluarte-luz" />
+                Quero estender minha mão
               </motion.a>
 
-              <button className="text-baluarte-luz font-sans font-medium hover:underline underline-offset-8 transition-all">
-                Outras formas de ajudar
+              {/* Botão Secundário: Inclusivo */}
+              <button className="text-baluarte-text/50 font-sans text-sm font-medium hover:text-baluarte-luz transition-all uppercase tracking-widest">
+                Como posso ajudar hoje?
               </button>
             </div>
           </motion.div>
