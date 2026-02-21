@@ -1,110 +1,138 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Menu, X, Loader2 } from 'lucide-react'
 import { client, urlFor } from '../sanity'
-import { Menu, Loader2 } from 'lucide-react'
-import MobileMenu from './MobileMenu'
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState('Início')
   const [logoUrl, setLogoUrl] = useState(null)
-  const [logoLoaded, setLogoLoaded] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   const menuLinks = [
     { name: 'Início', target: 'top' },
-    { name: 'Quem Somos', target: 'about' },
-    { name: 'Voluntariado', target: 'volunteer' },
+    { name: 'Manifesto', target: 'about' },
+    { name: 'O Chamado', target: 'volunteer' },
     { name: 'Contato', target: 'footer' },
   ]
+
+  // Monitora o scroll para adicionar uma sombra leve ao rolar
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     const query = '*[_type == "homePage"][0]{ logo }'
     client.fetch(query).then((data) => {
-      if (data?.logo) {
-        setLogoUrl(
-          urlFor(data.logo)
-            .width(360)
-            .auto('format')
-            .quality(90)
-            .url()
-        )
-      }
+      if (data?.logo) setLogoUrl(urlFor(data.logo).width(300).url())
     })
   }, [])
 
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? 'hidden' : 'auto'
-    return () => (document.body.style.overflow = 'auto')
-  }, [isMenuOpen])
-
-  const handleScroll = (target) => {
-    setIsMenuOpen(false)
-
+  const handleNavigate = (target, name) => {
+    setActiveTab(name)
+    setIsOpen(false)
     if (target === 'top') {
       window.scrollTo({ top: 0, behavior: 'smooth' })
-      return
+    } else {
+      document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' })
     }
-
-    const el = document.getElementById(target)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-24">
+      <header 
+        className={`sticky top-0 z-50 transition-all duration-500 ${
+          isScrolled 
+            ? 'bg-baluarte-bg/80 backdrop-blur-lg border-b border-baluarte-luz/10 py-4 shadow-sm' 
+            : 'bg-transparent py-6'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
+          
+          {/* Logo */}
+          <button onClick={() => handleNavigate('top', 'Início')} className="relative h-12 w-40">
+            {logoUrl ? (
+              <motion.img 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }}
+                src={logoUrl} 
+                alt="Logo Missão Baluarte" 
+                className="h-full w-auto object-contain"
+              />
+            ) : (
+              <Loader2 className="animate-spin text-baluarte-luz w-6 h-6" />
+            )}
+          </button>
 
-            <button
-              onClick={() => handleScroll('top')}
-              className="relative flex items-center h-16 w-44"
-              aria-label="Ir para o início"
-            >
-              {!logoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-                </div>
-              )}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-10">
+            {menuLinks.map((link) => (
+              <button
+                key={link.name}
+                onClick={() => handleNavigate(link.target, link.name)}
+                className="relative group text-sm font-medium tracking-widest uppercase text-baluarte-text/80 hover:text-baluarte-vida transition-colors"
+              >
+                {link.name}
+                {activeTab === link.name && (
+                  <motion.div
+                    layoutId="header-underline"
+                    className="absolute -bottom-2 left-0 right-0 h-[1.5px] bg-baluarte-luz"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
+          </nav>
 
-              {logoUrl && (
-    <img
-      src={logoUrl}
-      alt="Logo Missão Baluarte"
-      onLoad={() => setLogoLoaded(true)}
-      className={`h-16 w-auto transition-opacity duration-500 ${
-        logoLoaded ? 'opacity-100' : 'opacity-0'
-      }`}
-    />
-  )}
-            </button>
-
-            <nav className="hidden md:flex items-center gap-12">
-              {menuLinks.map((link) => (
-                <button
-                  key={link.name}
-                  onClick={() => handleScroll(link.target)}
-                  className="text-slate-600 font-medium hover:text-emerald-700 transition cursor-pointer"
-                >
-                  {link.name}
-                </button>
-              ))}
-            </nav>
-
-            <button
-              onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2 rounded-md text-slate-600 hover:bg-slate-100 transition"
-              aria-label="Abrir menu"
-            >
-              <Menu className="w-7 h-7" />
-            </button>
-          </div>
+          {/* Mobile Toggle */}
+          <button 
+            className="md:hidden text-baluarte-vida p-2"
+            onClick={() => setIsOpen(true)}
+          >
+            <Menu className="w-7 h-7" />
+          </button>
         </div>
       </header>
 
-      <MobileMenu
-        isOpen={isMenuOpen}
-        links={menuLinks}
-        onClose={() => setIsMenuOpen(false)}
-        onNavigate={handleScroll}
-      />
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[60] bg-baluarte-bg flex flex-col p-10"
+          >
+            <div className="flex justify-end mb-12">
+              <button onClick={() => setIsOpen(false)} className="text-baluarte-vida">
+                <X className="w-8 h-8" />
+              </button>
+            </div>
+            
+            <nav className="flex flex-col gap-8">
+              {menuLinks.map((link, i) => (
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  key={link.name}
+                  onClick={() => handleNavigate(link.target, link.name)}
+                  className="text-3xl font-serif text-baluarte-vida text-left"
+                >
+                  {link.name}
+                </motion.button>
+              ))}
+            </nav>
+
+            <div className="mt-auto border-t border-baluarte-luz/20 pt-8">
+              <p className="text-baluarte-luz font-serif italic">Sustentando promessas no sertão.</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }

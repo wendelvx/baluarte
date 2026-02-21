@@ -1,87 +1,84 @@
 import { useEffect, useState } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import { client } from './sanity'
 
+// Componentes Refatorados
 import Header from './components/Header'
 import Hero from './components/Hero'
-import About from './components/About'
-import Volunteer from './components/Volunteer'
+import Manifesto from './components/Manifesto' // Antigo About
+import VolunteerCall from './components/VolunteerCall' // Antigo Volunteer
+import ShopTeaser from './components/ShopTeaser'
 import Footer from './components/Footer'
 
 function App() {
   const [homeData, setHomeData] = useState(null)
   const [loading, setLoading] = useState(true)
 
- useEffect(() => {
-  const query = '*[_type == "homePage"][0]'
+  // Configuração da Progress Bar
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
 
-  client
-    .fetch(query)
-    .then((data) => {
-      console.log('DADOS DO SANITY:', data)
+  useEffect(() => {
+    const query = '*[_type == "homePage"][0]'
 
-      if (!data) {
-        throw new Error('Documento homePage não encontrado ou não publicado')
-      }
+    client
+      .fetch(query)
+      .then((data) => {
+        if (!data) throw new Error('Dados não encontrados')
+        setHomeData(data)
+      })
+      .catch((error) => console.error('Erro Sanity:', error))
+      .finally(() => setLoading(false))
+  }, [])
 
-      setHomeData(data)
-    })
-    .catch((error) => {
-      console.error('🔥 ERRO REAL DO SANITY:', error)
-      alert(error.message)
-    })
-    .finally(() => {
-      setLoading(false)
-    })
-}, [])
-
+  // Skeleton Loading Premium
   if (loading) {
-  return (
-    <div className="bg-white min-h-screen animate-pulse">
-      
-      <div className="h-16 bg-slate-100 border-b" />
-
-      <div className="w-full h-[260px] md:h-[420px] bg-slate-200" />
-
-      <div className="max-w-4xl mx-auto px-4 py-16 space-y-4">
-        <div className="h-6 w-40 bg-slate-200 rounded" />
-        <div className="h-4 w-full bg-slate-200 rounded" />
-        <div className="h-4 w-5/6 bg-slate-200 rounded" />
-        <div className="h-4 w-4/6 bg-slate-200 rounded" />
-      </div>
-
-      <div className="py-16 bg-slate-100">
-        <div className="max-w-xl mx-auto px-4 space-y-4">
-          <div className="h-6 w-60 bg-slate-200 rounded mx-auto" />
-          <div className="h-4 w-full bg-slate-200 rounded" />
-          <div className="h-10 w-48 bg-slate-300 rounded-full mx-auto" />
-        </div>
-      </div>
-
-      <div className="h-32 bg-slate-900" />
-    </div>
-  )
-}
-
-
-  if (!homeData) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-600">
-        Erro ao carregar o site.
+      <div className="bg-baluarte-bg min-h-screen flex flex-col items-center justify-center">
+        <motion.div 
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="flex flex-col items-center"
+        >
+          <div className="w-16 h-16 border-4 border-baluarte-luz/20 border-t-baluarte-luz rounded-full animate-spin mb-4" />
+          <p className="font-serif italic text-baluarte-vida tracking-widest">Sustentando promessas...</p>
+        </motion.div>
       </div>
     )
   }
 
+  if (!homeData) return null
+
   return (
-    <div className="bg-white text-slate-800">
+    <div className="bg-baluarte-bg font-sans selection:bg-baluarte-luz/30">
+      
+      {/* Progress Bar Dourada no Topo */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3px] bg-baluarte-luz z-[60] origin-[0%]"
+        style={{ scaleX }}
+      />
+
       <Header />
 
-      <About />
+      <main>
+        {/* 1. Hero: O Impacto Visual */}
+        {homeData.carouselImages?.length > 0 && (
+          <Hero images={homeData.carouselImages} />
+        )}
 
-      {homeData.carouselImages?.length > 0 && (
-        <Hero images={homeData.carouselImages} />
-      )}
+        {/* 2. Manifesto: A Nossa Essência */}
+        <Manifesto />
 
-      <Volunteer />
+        {/* 3. O Chamado: Conversão para Voluntariado */}
+        <VolunteerCall />
+
+        {/* 4. Shop: Apoio através de produtos */}
+        <ShopTeaser />
+      </main>
 
       <Footer contact={homeData.contactInfo} />
     </div>

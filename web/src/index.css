@@ -1,18 +1,43 @@
 @import "tailwindcss";
 
-html, body {
-  overflow-x: hidden;
+@theme {
+  /* Paleta Sertão Gentil */
+  --color-baluarte-bg: #FAF9F6;      /* Off-white */
+  --color-baluarte-vida: #2D4F1E;    /* Verde Sálvia */
+  --color-baluarte-luz: #D4A373;     /* Ouro/Areia */
+  --color-baluarte-text: #1E293B;    /* Slate Escuro */
+
+  /* Tipografia */
+  --font-serif: "Lora", serif;
+  --font-sans: "Inter", sans-serif;
+
+  /* Ajustes de Animação para o Menu Mobile */
+  --keyframes-slide-in: {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  };
+  --animation-slide-in: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes slide-in {
-  from {
-    transform: translateX(100%);
+/* Importação das Fontes via Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
   }
-  to {
-    transform: translateX(0);
+  
+  body {
+    @apply bg-baluarte-bg text-baluarte-text font-sans antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif;
   }
 }
 
-.animate-slide-in {
-  animation: slide-in 0.3s ease-out forwards;
+/* Utilidade para o efeito de "Revelação" que usaremos no Framer Motion */
+.reveal-text {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
