@@ -165,30 +165,36 @@ export default function ShopTeaser() {
 function ProductModal({ product, onClose }) {
   const [activeImg, setActiveImg] = useState(0)
   const [isZoomed, setIsZoomed] = useState(false)
+  const [hasScrolled, setHasScrolled] = useState(false) // Estado para o scroll hint
   const images = product.gallery || [product.image]
 
   const nextImg = (e) => { e.stopPropagation(); setActiveImg((prev) => (prev + 1) % images.length); }
   const prevImg = (e) => { e.stopPropagation(); setActiveImg((prev) => (prev - 1 + images.length) % images.length); }
 
+  // Função para esconder o hint de scroll ao mover
+  const handleScroll = (e) => {
+    if (e.target.scrollTop > 20) setHasScrolled(true)
+  }
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 lg:p-8">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-baluarte-text/95 backdrop-blur-xl" />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 lg:p-12">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-baluarte-text/98 backdrop-blur-2xl" />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
-        className="relative w-full max-w-7xl bg-baluarte-bg md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-full md:h-[90vh]"
+        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
+        className="relative w-full max-w-7xl bg-baluarte-bg md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-[95vh] md:h-[85vh] lg:h-[90vh]"
       >
-        {/* BOTÃO FECHAR - Visível em qualquer fundo */}
+        {/* BOTÃO FECHAR - Mais discreto no mobile */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-[70] p-3 bg-baluarte-vida text-white rounded-full transition-all hover:scale-110 shadow-2xl border-2 border-white/20"
+          className="absolute top-4 right-4 z-[110] p-2 bg-baluarte-vida text-white rounded-full transition-all hover:scale-110 shadow-2xl border border-white/10"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
 
-        {/* COLUNA ESQUERDA: Galeria Editorial */}
-        <div className="w-full md:w-5/12 bg-[#F8F7F4] relative flex flex-col h-[40vh] md:h-auto border-b md:border-b-0 md:border-r border-baluarte-luz/10">
-          <div className="flex-1 flex items-center justify-center p-12 overflow-hidden relative group">
+        {/* COLUNA ESQUERDA: Galeria (Altura reduzida no mobile para sobrar texto) */}
+        <div className="w-full md:w-1/2 lg:w-5/12 bg-[#F8F7F4] relative flex flex-col h-[35vh] md:h-auto border-b md:border-b-0 md:border-r border-baluarte-luz/10">
+          <div className="flex-1 flex items-center justify-center p-8 md:p-12 overflow-hidden relative">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeImg}
@@ -196,54 +202,69 @@ function ProductModal({ product, onClose }) {
                 className="relative cursor-zoom-in"
                 onClick={() => setIsZoomed(true)}
               >
-                <img src={images[activeImg]} className="max-w-full max-h-[25vh] md:max-h-[50vh] object-contain drop-shadow-2xl" alt={product.title} />
+                <img src={images[activeImg]} className="max-w-full max-h-[25vh] md:max-h-[55vh] object-contain drop-shadow-2xl" alt={product.title} />
               </motion.div>
             </AnimatePresence>
 
-            {/* Setas de Navegação */}
             {images.length > 1 && (
               <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
-                <button onClick={prevImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronLeft size={20} /></button>
-                <button onClick={nextImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronRight size={20} /></button>
+                <button onClick={prevImg} className="p-2 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-lg hover:bg-baluarte-vida hover:text-white transition-all"><ChevronLeft size={18} /></button>
+                <button onClick={nextImg} className="p-2 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-lg hover:bg-baluarte-vida hover:text-white transition-all"><ChevronRight size={18} /></button>
               </div>
             )}
           </div>
-
-          {/* Miniaturas de Navegação */}
-          <div className="p-4 flex gap-3 justify-center bg-white/30 backdrop-blur-sm">
+          
+          <div className="p-3 flex gap-2 justify-center bg-white/50 backdrop-blur-sm border-t border-baluarte-luz/5">
             {images.map((img, i) => (
-              <button key={i} onClick={() => setActiveImg(i)} className={`w-12 h-16 rounded-xl overflow-hidden border-2 transition-all ${activeImg === i ? 'border-baluarte-luz scale-105' : 'border-transparent opacity-40'}`}>
+              <button key={i} onClick={() => setActiveImg(i)} className={`w-10 h-14 rounded-lg overflow-hidden border-2 transition-all ${activeImg === i ? 'border-baluarte-luz scale-105 shadow-md' : 'border-transparent opacity-40'}`}>
                 <img src={img} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
         </div>
 
-        {/* COLUNA DIREITA: Conteúdo e Dock de Checkout */}
-        <div className="w-full md:w-7/12 flex flex-col h-[60vh] md:h-auto bg-baluarte-bg relative">
+        {/* COLUNA DIREITA: Conteúdo */}
+        <div className="w-full md:w-1/2 lg:w-7/12 flex flex-col flex-1 bg-baluarte-bg relative min-h-0">
+          
+          {/* INDICADOR DE SCROLL (Mobile Only) */}
+          <AnimatePresence>
+            {!hasScrolled && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute top-4 left-1/2 -translate-x-1/2 z-30 md:hidden bg-baluarte-vida/90 text-white px-4 py-1.5 rounded-full text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-2 shadow-xl backdrop-blur-sm"
+              >
+                <Sparkles size={10} className="text-baluarte-luz" /> Role para detalhes
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          {/* ÁREA DE SCROLL: Com padding extra na base para não overlapar o dock */}
-          <div className="flex-1 overflow-y-auto p-8 md:p-16 custom-scrollbar pb-48 md:pb-40">
-            <div className="max-w-2xl space-y-16">
+          {/* ÁREA DE SCROLL */}
+          <div 
+            onScroll={handleScroll}
+            className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 custom-scrollbar pb-32 md:pb-40"
+          >
+            <div className="space-y-12 md:space-y-16">
               <header>
-                <span className="text-baluarte-luz font-sans text-xs tracking-widest uppercase font-bold">{product.category}</span>
-                <h2 className="text-4xl md:text-6xl font-serif text-baluarte-vida mt-2 mb-6 leading-tight">{product.title}</h2>
-                <p className="text-baluarte-vida/60 font-serif italic text-xl md:text-2xl leading-relaxed">"{product.tagline}"</p>
+                <span className="text-baluarte-luz font-sans text-[10px] tracking-widest uppercase font-bold">{product.category}</span>
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif text-baluarte-vida mt-2 mb-4 leading-tight">{product.title}</h2>
+                <p className="text-baluarte-vida/60 font-serif italic text-lg md:text-xl leading-relaxed">"{product.tagline}"</p>
               </header>
 
-              <section className="space-y-6">
-                <h4 className="text-baluarte-vida font-bold text-xs uppercase tracking-widest border-b border-baluarte-luz/20 pb-2">Manifesto do Material</h4>
-                <p className="text-baluarte-text/80 font-sans text-lg leading-relaxed">{product.about}</p>
+              <section className="space-y-4">
+                <h4 className="text-baluarte-vida font-bold text-[10px] uppercase tracking-widest border-b border-baluarte-luz/10 pb-2">Sobre este material</h4>
+                <p className="text-baluarte-text/80 font-sans text-base md:text-lg leading-relaxed">{product.about}</p>
               </section>
 
-              {/* Seção Customizada (Álbum / Atributos) */}
+              {/* Seção Customizada */}
               {product.customSectionTitle && (
-                <section className="space-y-8">
-                  <h4 className="text-baluarte-vida font-bold text-xs uppercase tracking-widest">{product.customSectionTitle}</h4>
-                  <div className="grid gap-4">
+                <section className="space-y-6">
+                  <h4 className="text-baluarte-vida font-bold text-[10px] uppercase tracking-widest">{product.customSectionTitle}</h4>
+                  <div className="grid gap-3">
                     {product.customSectionItems.map((item, i) => (
-                      <div key={i} className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-baluarte-luz/5 shadow-sm">
-                        <CheckCircle2 className="text-baluarte-luz shrink-0" size={20} />
+                      <div key={i} className="flex items-start gap-3 p-4 bg-white rounded-2xl border border-baluarte-luz/5">
+                        <CheckCircle2 className="text-baluarte-luz shrink-0 mt-0.5" size={16} />
                         <span className="text-baluarte-text/80 font-sans text-sm md:text-base leading-snug">{item}</span>
                       </div>
                     ))}
@@ -251,29 +272,29 @@ function ProductModal({ product, onClose }) {
                 </section>
               )}
 
-              {/* Benefícios Padrão */}
+              {/* Benefícios */}
               {product.benefits && (
-                <section className="grid gap-6">
+                <section className="grid gap-4">
                   {product.benefits.map((b, i) => (
-                    <div key={i} className="flex gap-5 p-6 bg-white rounded-3xl border border-baluarte-luz/5 shadow-sm">
-                      <div className="w-10 h-10 bg-baluarte-bg rounded-xl flex items-center justify-center text-baluarte-luz shrink-0"><Heart size={18} /></div>
+                    <div key={i} className="flex gap-4 p-5 bg-white rounded-2xl border border-baluarte-luz/5">
+                      <div className="w-8 h-8 bg-baluarte-bg rounded-lg flex items-center justify-center text-baluarte-luz shrink-0"><Heart size={14} /></div>
                       <div>
-                        <p className="font-bold text-baluarte-vida text-lg">{b.label}</p>
-                        <p className="text-baluarte-text/60 text-sm leading-relaxed">{b.desc}</p>
+                        <p className="font-bold text-baluarte-vida text-sm md:text-base">{b.label}</p>
+                        <p className="text-baluarte-text/60 text-[13px] leading-relaxed">{b.desc}</p>
                       </div>
                     </div>
                   ))}
                 </section>
               )}
 
-              {/* Bloco de Recursos */}
-              <section className="bg-baluarte-vida text-white p-10 rounded-[3rem] relative shadow-2xl">
-                <Rocket className="absolute -right-6 -top-6 w-32 h-32 opacity-10 rotate-12" />
-                <h4 className="font-serif text-3xl mb-8">O que você encontra:</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Bloco de Recursos (Escuro) */}
+              <section className="bg-baluarte-vida text-white p-8 md:p-10 rounded-[2.5rem] relative shadow-xl overflow-hidden">
+                <Rocket className="absolute -right-4 -top-4 w-24 h-24 opacity-5 rotate-12" />
+                <h4 className="font-serif text-2xl mb-6">O que inclui:</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {product.features.map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 text-sm opacity-90 border-b border-white/10 pb-4">
-                      <CheckCircle2 size={18} className="text-baluarte-luz shrink-0" /> {f}
+                    <div key={i} className="flex items-center gap-3 text-sm opacity-90 border-b border-white/5 pb-3">
+                      <CheckCircle2 size={14} className="text-baluarte-luz shrink-0" /> {f}
                     </div>
                   ))}
                 </div>
@@ -281,15 +302,15 @@ function ProductModal({ product, onClose }) {
 
               {/* FAQ */}
               {product.faq && (
-                <section className="space-y-8">
-                  <h4 className="text-baluarte-vida font-bold text-xs uppercase tracking-widest flex items-center gap-2">
-                    <HelpCircle size={18} className="text-baluarte-luz" /> Perguntas frequentes
+                <section className="space-y-6">
+                  <h4 className="text-baluarte-vida font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
+                    <HelpCircle size={16} className="text-baluarte-luz" /> Dúvidas comuns
                   </h4>
-                  <div className="grid gap-4">
+                  <div className="grid gap-3">
                     {product.faq.map((item, i) => (
-                      <div key={i} className="bg-white p-6 rounded-2xl border border-baluarte-luz/10">
-                        <p className="font-bold text-baluarte-vida mb-2">? {item.q}</p>
-                        <p className="text-sm text-baluarte-text/60 leading-relaxed italic">{item.a}</p>
+                      <div key={i} className="bg-[#F8F7F4] p-5 rounded-xl border border-baluarte-luz/5">
+                        <p className="font-bold text-baluarte-vida text-sm mb-1">{item.q}</p>
+                        <p className="text-[13px] text-baluarte-text/60 italic">{item.a}</p>
                       </div>
                     ))}
                   </div>
@@ -298,46 +319,44 @@ function ProductModal({ product, onClose }) {
             </div>
           </div>
 
-          {/* DOCK DE CHECKOUT: Fixo na base, com gradiente de proteção */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 border-t border-baluarte-luz/10 bg-white/95 backdrop-blur-xl z-20">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="text-center sm:text-left">
-                <p className="text-[10px] uppercase text-baluarte-text/40 tracking-widest font-bold mb-1">Investimento Social</p>
-                <div className="flex items-baseline gap-2 justify-center sm:justify-start">
-                  <span className="text-4xl font-serif text-baluarte-vida">R$ {product.price}</span>
+          {/* DOCK DE CHECKOUT REFORMULADO */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-white/95 backdrop-blur-2xl border-t border-baluarte-luz/10 z-50">
+            {/* Gradiente de proteção para o texto não sumir bruscamente */}
+            <div className="absolute -top-12 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+            
+            <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto">
+              <div>
+                <p className="text-[8px] md:text-[10px] uppercase text-baluarte-text/40 tracking-[0.2em] font-bold">Investimento</p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-2xl md:text-4xl font-serif text-baluarte-vida">R$ {product.price}</span>
                 </div>
-                <p className="text-[10px] text-baluarte-luz font-bold uppercase mt-1">Acesso vitalício & atualizações</p>
               </div>
 
               <motion.a
                 href={product.checkoutUrl} target="_blank" rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-10 bg-baluarte-vida text-white py-5 rounded-full flex items-center justify-center gap-4 font-bold tracking-widest uppercase text-[10px] md:text-xs shadow-2xl shadow-baluarte-vida/20 hover:bg-baluarte-vida/95 transition-all"
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                className="flex-1 sm:flex-none px-6 md:px-10 bg-baluarte-vida text-white py-4 md:py-5 rounded-full flex items-center justify-center gap-3 font-bold tracking-widest uppercase text-[9px] md:text-xs shadow-xl transition-all"
               >
-                Quero meu material agora <ArrowRight size={16} />
+                Garantir Material <ArrowRight size={14} />
               </motion.a>
             </div>
-            <p className="text-center mt-4 text-[9px] text-baluarte-text/30 uppercase tracking-[0.4em] font-medium">
-              Transação Protegida via Caktos • Download Imediato
-            </p>
           </div>
         </div>
       </motion.div>
 
-      {/* ZOOM OVERLAY (FULLSCREEN REAL) */}
+      {/* ZOOM OVERLAY */}
       <AnimatePresence>
         {isZoomed && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[120] bg-baluarte-text flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
+            className="fixed inset-0 z-[150] bg-baluarte-text/95 flex items-center justify-center p-4 cursor-zoom-out"
             onClick={() => setIsZoomed(false)}
           >
-            <button className="absolute top-10 right-10 text-white hover:scale-110 transition-transform scale-150"><ZoomOut /></button>
+            <button className="absolute top-6 right-6 text-white scale-150"><ZoomOut /></button>
             <motion.img
               initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
-              src={images[activeImg]} className="max-w-full max-h-full object-contain shadow-2xl shadow-black"
+              src={images[activeImg]} className="max-w-full max-h-full object-contain"
             />
-            <p className="absolute bottom-10 text-white/30 text-xs tracking-widest uppercase italic">Pressione para retornar</p>
           </motion.div>
         )}
       </AnimatePresence>
