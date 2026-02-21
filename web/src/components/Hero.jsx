@@ -93,7 +93,7 @@ export default function Hero({ images = [] }) {
           className="w-full flex flex-col items-center"
         >
           <a
-  href={`https://wa.me/5588982228665?text=${encodeURIComponent(
+  href={`https://wa.me/558899990250?text=${encodeURIComponent(
     "Olá! Estive no site da Missão Baluarte e senti meu coração tocado. Quero abraçar esta causa e entender como posso ajudar!"
   )}`}
   target="_blank"

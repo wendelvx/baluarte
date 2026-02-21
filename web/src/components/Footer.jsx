@@ -78,7 +78,7 @@ export default function Footer({ contact }) {
   <motion.a
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
-    href={`https://wa.me/5588982228665?text=${encodeURIComponent(
+    href={`https://wa.me/558899990250?text=${encodeURIComponent(
       "Olá! Gostaria de tirar algumas dúvidas e saber mais sobre como posso fazer parte e apoiar a Missão Baluarte."
     )}`}
     target="_blank"

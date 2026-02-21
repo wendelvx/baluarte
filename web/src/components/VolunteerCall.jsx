@@ -59,7 +59,7 @@ export default function VolunteerCall() {
            <div className="flex flex-col sm:flex-row gap-8 justify-center md:justify-start items-center">
   {/* Botão Principal: O "Sim" Emocional via WhatsApp */}
   <motion.a
-    href={`https://wa.me/5588982228665?text=${encodeURIComponent(
+    href={`https://wa.me/558899990250?text=${encodeURIComponent(
       "Olá! Vi a página da Missão Baluarte e gostei muito do movimento. Gostaria de saber o que posso fazer para ser um voluntário e ajudar!"
     )}`}
     target="_blank"
