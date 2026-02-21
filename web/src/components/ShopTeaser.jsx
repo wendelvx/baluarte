@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  X, CheckCircle2, Sparkles, Smartphone, 
+import {
+  X, CheckCircle2, Sparkles, Smartphone,
   BookOpen, Trophy, Rocket, ArrowRight, HelpCircle,
-  ChevronLeft, ChevronRight, Heart, ZoomIn, ZoomOut 
+  ChevronLeft, ChevronRight, Heart, ZoomIn, ZoomOut
 } from 'lucide-react'
 
 const products = [
@@ -103,17 +103,34 @@ export default function ShopTeaser() {
     <section id="shop" className="py-24 md:py-32 bg-baluarte-bg scroll-mt-20">
       <div className="max-w-7xl mx-auto px-8">
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
-          <div className="max-w-2xl text-center md:text-left">
-            <motion.span initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} className="text-baluarte-luz font-sans text-xs tracking-[0.5em] uppercase mb-4 block font-bold">
-              Curadoria de Propósito
-            </motion.span>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl text-baluarte-vida font-serif leading-tight">
-              Sementes para um <br />
-              <span className="italic text-baluarte-luz font-normal">futuro inesquecível.</span>
-            </h2>
-          </div>
-        </div>
+  <div className="max-w-2xl text-center md:text-left">
+    <motion.span 
+      initial={{ opacity: 0, y: 10 }} 
+      whileInView={{ opacity: 1, y: 0 }} 
+      className="text-baluarte-luz font-sans text-[10px] md:text-xs tracking-[0.5em] uppercase mb-4 block font-bold"
+    >
+      Sementes de Amor
+    </motion.span>
+    <h2 className="text-4xl md:text-6xl lg:text-7xl text-baluarte-vida font-serif leading-tight">
+      Materiais que preparam as suas mãos, <br />
+      <span className="italic text-baluarte-luz font-normal">e abraçam o coração deles.</span>
+    </h2>
+  </div>
 
+  <motion.div 
+    initial={{ opacity: 0, x: 20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    transition={{ delay: 0.2 }}
+    className="max-w-md text-center md:text-right"
+  >
+    <p className="text-baluarte-text/70 text-lg leading-relaxed font-sans italic border-r-0 md:border-r-2 border-baluarte-luz/20 pr-0 md:pr-6 mb-4">
+      "Ao escolher um material, você não apenas enriquece o seu ministério, mas se torna o milagre na vida de uma criança. <span className="text-baluarte-vida font-bold">Cada página que você usa aqui, vira um sorriso que floresce lá no sertão.</span>"
+    </p>
+    <p className="text-[10px] uppercase tracking-[0.2em] text-baluarte-luz font-bold">
+      O valor de cada material sustenta o nosso Mercado Social
+    </p>
+  </motion.div>
+</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           {products.map((product, idx) => (
             <motion.div
@@ -157,13 +174,13 @@ function ProductModal({ product, onClose }) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 lg:p-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-baluarte-text/95 backdrop-blur-xl" />
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
         className="relative w-full max-w-7xl bg-baluarte-bg md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-full md:h-[90vh]"
       >
         {/* BOTÃO FECHAR - Visível em qualquer fundo */}
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="absolute top-6 right-6 z-[70] p-3 bg-baluarte-vida text-white rounded-full transition-all hover:scale-110 shadow-2xl border-2 border-white/20"
         >
           <X className="w-6 h-6" />
@@ -173,7 +190,7 @@ function ProductModal({ product, onClose }) {
         <div className="w-full md:w-5/12 bg-[#F8F7F4] relative flex flex-col h-[40vh] md:h-auto border-b md:border-b-0 md:border-r border-baluarte-luz/10">
           <div className="flex-1 flex items-center justify-center p-12 overflow-hidden relative group">
             <AnimatePresence mode="wait">
-              <motion.div 
+              <motion.div
                 key={activeImg}
                 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
                 className="relative cursor-zoom-in"
@@ -186,8 +203,8 @@ function ProductModal({ product, onClose }) {
             {/* Setas de Navegação */}
             {images.length > 1 && (
               <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
-                <button onClick={prevImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronLeft size={20}/></button>
-                <button onClick={nextImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronRight size={20}/></button>
+                <button onClick={prevImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronLeft size={20} /></button>
+                <button onClick={nextImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronRight size={20} /></button>
               </div>
             )}
           </div>
@@ -204,7 +221,7 @@ function ProductModal({ product, onClose }) {
 
         {/* COLUNA DIREITA: Conteúdo e Dock de Checkout */}
         <div className="w-full md:w-7/12 flex flex-col h-[60vh] md:h-auto bg-baluarte-bg relative">
-          
+
           {/* ÁREA DE SCROLL: Com padding extra na base para não overlapar o dock */}
           <div className="flex-1 overflow-y-auto p-8 md:p-16 custom-scrollbar pb-48 md:pb-40">
             <div className="max-w-2xl space-y-16">
@@ -221,17 +238,17 @@ function ProductModal({ product, onClose }) {
 
               {/* Seção Customizada (Álbum / Atributos) */}
               {product.customSectionTitle && (
-                 <section className="space-y-8">
-                   <h4 className="text-baluarte-vida font-bold text-xs uppercase tracking-widest">{product.customSectionTitle}</h4>
-                   <div className="grid gap-4">
-                     {product.customSectionItems.map((item, i) => (
-                       <div key={i} className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-baluarte-luz/5 shadow-sm">
-                          <CheckCircle2 className="text-baluarte-luz shrink-0" size={20} />
-                          <span className="text-baluarte-text/80 font-sans text-sm md:text-base leading-snug">{item}</span>
-                       </div>
-                     ))}
-                   </div>
-                 </section>
+                <section className="space-y-8">
+                  <h4 className="text-baluarte-vida font-bold text-xs uppercase tracking-widest">{product.customSectionTitle}</h4>
+                  <div className="grid gap-4">
+                    {product.customSectionItems.map((item, i) => (
+                      <div key={i} className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-baluarte-luz/5 shadow-sm">
+                        <CheckCircle2 className="text-baluarte-luz shrink-0" size={20} />
+                        <span className="text-baluarte-text/80 font-sans text-sm md:text-base leading-snug">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
               )}
 
               {/* Benefícios Padrão */}
@@ -266,7 +283,7 @@ function ProductModal({ product, onClose }) {
               {product.faq && (
                 <section className="space-y-8">
                   <h4 className="text-baluarte-vida font-bold text-xs uppercase tracking-widest flex items-center gap-2">
-                     <HelpCircle size={18} className="text-baluarte-luz" /> Perguntas frequentes
+                    <HelpCircle size={18} className="text-baluarte-luz" /> Perguntas frequentes
                   </h4>
                   <div className="grid gap-4">
                     {product.faq.map((item, i) => (
@@ -291,7 +308,7 @@ function ProductModal({ product, onClose }) {
                 </div>
                 <p className="text-[10px] text-baluarte-luz font-bold uppercase mt-1">Acesso vitalício & atualizações</p>
               </div>
-              
+
               <motion.a
                 href={product.checkoutUrl} target="_blank" rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -310,15 +327,15 @@ function ProductModal({ product, onClose }) {
       {/* ZOOM OVERLAY (FULLSCREEN REAL) */}
       <AnimatePresence>
         {isZoomed && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[120] bg-baluarte-text flex items-center justify-center p-4 md:p-12 cursor-zoom-out"
             onClick={() => setIsZoomed(false)}
           >
             <button className="absolute top-10 right-10 text-white hover:scale-110 transition-transform scale-150"><ZoomOut /></button>
-            <motion.img 
+            <motion.img
               initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
-              src={images[activeImg]} className="max-w-full max-h-full object-contain shadow-2xl shadow-black" 
+              src={images[activeImg]} className="max-w-full max-h-full object-contain shadow-2xl shadow-black"
             />
             <p className="absolute bottom-10 text-white/30 text-xs tracking-widest uppercase italic">Pressione para retornar</p>
           </motion.div>

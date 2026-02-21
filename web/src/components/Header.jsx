@@ -9,11 +9,13 @@ export default function Header() {
   const [logoUrl, setLogoUrl] = useState(null)
   const [isScrolled, setIsScrolled] = useState(false)
 
+  // Nomes e apontamentos atualizados
   const menuLinks = [
     { name: 'Início', target: 'top' },
-    { name: 'Manifesto', target: 'about' },
-    { name: 'O Chamado', target: 'volunteer' },
-    { name: 'Contato', target: 'footer' },
+    { name: 'Essência', target: 'about' },
+    { name: 'O Seu Sim', target: 'volunteer' },
+    { name: 'Sementes', target: 'shop' },
+    { name: 'Conectar', target: 'footer' },
   ]
 
   // Monitora o scroll para adicionar uma sombra leve ao rolar
