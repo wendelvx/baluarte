@@ -77,9 +77,11 @@ export default function Manifesto() {
             transition={{ duration: 1, delay: 0.2 }}
             className="md:w-1/2 md:mt-16 text-baluarte-text/70 text-lg leading-relaxed font-sans italic border-l border-baluarte-luz/20 pl-6"
           >
-            <p>
-              "No silêncio do solo seco, ouvimos o chamado de quem ainda não tem voz. Não entregamos apenas serviços; oferecemos o chão firme para que os pés cansados possam, enfim, correr em direção ao amanhã."
-            </p>
+            <p >
+  "No bater de cada pequeno coração, protegemos a vida e a pureza de cada criança que abraçamos. <br />
+  Não entregamos apenas serviços; oferecemos o colo que acolhe para que <br />
+  <span className="text-baluarte-vida font-bold">sonhos esquecidos possam, enfim, florescer em direção ao amanhã.</span>"
+</p>
           </motion.div>
         </div>
 

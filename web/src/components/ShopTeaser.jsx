@@ -25,9 +25,9 @@ const products = [
     features: ["Aulas Semanais Completas", "Baseado na Bíblia", "Sugestões de Músicas", "Atividades Práticas"],
     faq: [
       { q: "Posso aplicar as 4 aulas em um mês?", a: "Sim! Cada aula foi desenvolvida para ser aplicada semanalmente, garantindo um aprendizado progressivo durante um mês completo." },
-      { q: "E-book digital ou impresso?", a: "Você escolhe! Pode ser usado em tablets e celulares ou impresso para uso físico." },
-      { q: "Para qual faixa etária é indicado?", a: "Especialmente para crianças de 4 a 10 anos, com atividades adaptáveis." },
-      { q: "Preciso ter experiência?", a: "Não! O e-book traz orientações passo a passo para iniciantes no ministério." }
+      { q: "E-book digital ou impresso?", a: "Você escolhe! Pode ser usado em tablets e celulares ou impresso para uso físico. Ambas as formas são funcionais." },
+      { q: "Para qual faixa etária é indicado?", a: "Especialmente para crianças de 4 a 10 anos, com atividades adaptáveis conforme a maturidade de cada grupo." },
+      { q: "Preciso ter experiência?", a: "Não é necessário! O e-book traz orientações claras e práticas passo a passo para iniciantes." }
     ]
   },
   {
@@ -41,11 +41,11 @@ const products = [
     tagline: "Quem Deus é? Ensine com profundidade e amor.",
     about: "Um manual prático e inspirador para ensinar os atributos exclusivos de Deus de forma clara e envolvente, despertando nos pequenos um coração sensível à Sua presença.",
     benefits: [
-      { label: "Claro e Acessível", desc: "Linguagem adaptada para o entendimento infantil." },
-      { label: "Aulas Dinâmicas", desc: "Conteúdo interativo já pronto para aplicação." },
-      { label: "Fortaleça a Fé", desc: "Ajuda a formar as próximas gerações para a Glória de Deus." }
+      { label: "Claro e Acessível", desc: "Ensine sobre Deus de forma simples às crianças." },
+      { label: "Aulas Dinâmicas", desc: "Conteúdo interativo já pronto para usar." },
+      { label: "Propósito Real", desc: "Inspiração para discipular com amor e verdade." }
     ],
-    features: ["Explicação de Atributos", "Versículos Relacionados", "Atividades Criativas", "Orações por Lição"],
+    features: ["Explicação de Atributos", "Versículos Relacionados", "Atividades Criativas", "Orações Preparadas"],
     customSectionTitle: "O que você vai encontrar:",
     customSectionItems: [
       "Explicação dos atributos exclusivos de Deus",
@@ -67,11 +67,11 @@ const products = [
     about: "Motive as crianças a decorarem versículos bíblicos! Uma ferramenta completa para premiar o aprendizado e tornar o estudo da Bíblia divertido e memorável.",
     customSectionTitle: "Por que você vai amar este álbum?",
     customSectionItems: [
-      "Incentiva memorização: Motiva as crianças a decorarem a Palavra",
-      "Recompensa motivadora: Sistema de méritos divertido",
-      "Organiza o estudo: Estrutura interativa para professores",
-      "Praticidade: Ferramenta pronta para o Ministério Infantil",
-      "47 Figurinhas exclusivas: Para colecionar e distribuir",
+      "Incentiva memorização: Motiva as crianças a decorarem a Palavra de Deus",
+      "Recompensa motivadora: Sistema de méritos divertido para o aprendizado",
+      "Organiza o estudo: Estrutura interativa e prática para professores",
+      "Facilita o trabalho: Ferramenta pronta para o Ministério Infantil",
+      "47 figurinhas exclusivas: Para colecionar e distribuir como mérito",
       "Aprendizado divertido: Torna o estudo envolvente e memorável"
     ],
     features: ["47 Figurinhas Únicas", "Sistema de Mérito", "Arte Encantadora", "Fácil Impressão"]
@@ -125,11 +125,11 @@ export default function ShopTeaser() {
               className="group cursor-pointer"
             >
               <div className="relative aspect-[3/4] bg-white rounded-3xl overflow-hidden mb-6 p-6 flex items-center justify-center border border-baluarte-luz/5 shadow-sm group-hover:shadow-2xl transition-all duration-700">
-                <img src={product.image} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" alt={product.title} />
+                <img src={product.image} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 drop-shadow-xl" alt={product.title} />
                 <div className="absolute top-4 right-4 bg-baluarte-vida text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border border-white/20">R$ {product.price}</div>
                 <div className="absolute inset-0 bg-baluarte-vida/5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              <div className="space-y-2 px-2">
+              <div className="space-y-2 px-2 text-center md:text-left">
                 <p className="text-[10px] uppercase tracking-widest text-baluarte-luz font-bold">{product.category}</p>
                 <h3 className="font-serif text-2xl text-baluarte-vida group-hover:text-baluarte-luz transition-colors leading-tight">{product.title}</h3>
               </div>
@@ -150,24 +150,27 @@ function ProductModal({ product, onClose }) {
   const [isZoomed, setIsZoomed] = useState(false)
   const images = product.gallery || [product.image]
 
+  const nextImg = (e) => { e.stopPropagation(); setActiveImg((prev) => (prev + 1) % images.length); }
+  const prevImg = (e) => { e.stopPropagation(); setActiveImg((prev) => (prev - 1 + images.length) % images.length); }
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 lg:p-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-baluarte-text/95 backdrop-blur-xl" />
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
         className="relative w-full max-w-7xl bg-baluarte-bg md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-full md:h-[90vh]"
       >
-        {/* BOTÃO FECHAR - Corrigido para ser visível e elegante */}
+        {/* BOTÃO FECHAR - Visível em qualquer fundo */}
         <button 
           onClick={onClose} 
-          className="absolute top-6 right-6 z-[70] p-3 bg-baluarte-vida text-white rounded-full transition-all hover:scale-110 shadow-xl border-2 border-white/20"
+          className="absolute top-6 right-6 z-[70] p-3 bg-baluarte-vida text-white rounded-full transition-all hover:scale-110 shadow-2xl border-2 border-white/20"
         >
           <X className="w-6 h-6" />
         </button>
 
-        {/* LADO ESQUERDO: GALERIA EDITORIAL COM SETAS */}
-        <div className="w-full md:w-5/12 bg-[#F8F7F4] relative flex flex-col h-[45vh] md:h-auto border-b md:border-b-0 md:border-r border-baluarte-luz/10">
+        {/* COLUNA ESQUERDA: Galeria Editorial */}
+        <div className="w-full md:w-5/12 bg-[#F8F7F4] relative flex flex-col h-[40vh] md:h-auto border-b md:border-b-0 md:border-r border-baluarte-luz/10">
           <div className="flex-1 flex items-center justify-center p-12 overflow-hidden relative group">
             <AnimatePresence mode="wait">
               <motion.div 
@@ -176,47 +179,39 @@ function ProductModal({ product, onClose }) {
                 className="relative cursor-zoom-in"
                 onClick={() => setIsZoomed(true)}
               >
-                <img src={images[activeImg]} className="max-w-full max-h-[30vh] md:max-h-[50vh] object-contain drop-shadow-2xl" alt={product.title} />
+                <img src={images[activeImg]} className="max-w-full max-h-[25vh] md:max-h-[50vh] object-contain drop-shadow-2xl" alt={product.title} />
               </motion.div>
             </AnimatePresence>
 
-            {/* Setas de Navegação Interna */}
+            {/* Setas de Navegação */}
             {images.length > 1 && (
               <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
-                <button 
-                  onClick={(e) => { e.stopPropagation(); setActiveImg((activeImg - 1 + images.length) % images.length) }} 
-                  className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-md hover:bg-baluarte-vida hover:text-white transition-all"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); setActiveImg((activeImg + 1) % images.length) }} 
-                  className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-md hover:bg-baluarte-vida hover:text-white transition-all"
-                >
-                  <ChevronRight size={20} />
-                </button>
+                <button onClick={prevImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronLeft size={20}/></button>
+                <button onClick={nextImg} className="p-3 bg-white/90 text-baluarte-vida rounded-full pointer-events-auto shadow-xl hover:bg-baluarte-vida hover:text-white transition-all"><ChevronRight size={20}/></button>
               </div>
             )}
           </div>
 
-          <div className="p-6 flex gap-3 justify-center bg-white/30 backdrop-blur-sm">
+          {/* Miniaturas de Navegação */}
+          <div className="p-4 flex gap-3 justify-center bg-white/30 backdrop-blur-sm">
             {images.map((img, i) => (
-              <button key={i} onClick={() => setActiveImg(i)} className={`w-14 h-16 rounded-xl overflow-hidden border-2 transition-all ${activeImg === i ? 'border-baluarte-luz scale-105' : 'border-transparent opacity-40 hover:opacity-100'}`}>
+              <button key={i} onClick={() => setActiveImg(i)} className={`w-12 h-16 rounded-xl overflow-hidden border-2 transition-all ${activeImg === i ? 'border-baluarte-luz scale-105' : 'border-transparent opacity-40'}`}>
                 <img src={img} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
         </div>
 
-        {/* LADO DIREITO: CONTEÚDO E CHECKOUT FIXO */}
-        <div className="w-full md:w-7/12 flex flex-col h-[55vh] md:h-auto bg-baluarte-bg">
+        {/* COLUNA DIREITA: Conteúdo e Dock de Checkout */}
+        <div className="w-full md:w-7/12 flex flex-col h-[60vh] md:h-auto bg-baluarte-bg relative">
           
-          <div className="flex-1 overflow-y-auto p-8 md:p-16 custom-scrollbar">
+          {/* ÁREA DE SCROLL: Com padding extra na base para não overlapar o dock */}
+          <div className="flex-1 overflow-y-auto p-8 md:p-16 custom-scrollbar pb-48 md:pb-40">
             <div className="max-w-2xl space-y-16">
               <header>
                 <span className="text-baluarte-luz font-sans text-xs tracking-widest uppercase font-bold">{product.category}</span>
                 <h2 className="text-4xl md:text-6xl font-serif text-baluarte-vida mt-2 mb-6 leading-tight">{product.title}</h2>
-                <p className="text-baluarte-vida/60 font-serif italic text-2xl leading-relaxed">"{product.tagline}"</p>
+                <p className="text-baluarte-vida/60 font-serif italic text-xl md:text-2xl leading-relaxed">"{product.tagline}"</p>
               </header>
 
               <section className="space-y-6">
@@ -239,7 +234,7 @@ function ProductModal({ product, onClose }) {
                  </section>
               )}
 
-              {/* Benefícios Padrão (Conhecendo Deus / 30x) */}
+              {/* Benefícios Padrão */}
               {product.benefits && (
                 <section className="grid gap-6">
                   {product.benefits.map((b, i) => (
@@ -254,9 +249,10 @@ function ProductModal({ product, onClose }) {
                 </section>
               )}
 
+              {/* Bloco de Recursos */}
               <section className="bg-baluarte-vida text-white p-10 rounded-[3rem] relative shadow-2xl">
                 <Rocket className="absolute -right-6 -top-6 w-32 h-32 opacity-10 rotate-12" />
-                <h4 className="font-serif text-3xl mb-8">Conteúdo Rico e Prático:</h4>
+                <h4 className="font-serif text-3xl mb-8">O que você encontra:</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {product.features.map((f, i) => (
                     <div key={i} className="flex items-center gap-3 text-sm opacity-90 border-b border-white/10 pb-4">
@@ -266,6 +262,7 @@ function ProductModal({ product, onClose }) {
                 </div>
               </section>
 
+              {/* FAQ */}
               {product.faq && (
                 <section className="space-y-8">
                   <h4 className="text-baluarte-vida font-bold text-xs uppercase tracking-widest flex items-center gap-2">
@@ -284,13 +281,13 @@ function ProductModal({ product, onClose }) {
             </div>
           </div>
 
-          {/* DOCK DE CHECKOUT */}
-          <div className="p-8 md:p-12 border-t border-baluarte-luz/10 bg-white/95 backdrop-blur-xl z-20">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-8">
+          {/* DOCK DE CHECKOUT: Fixo na base, com gradiente de proteção */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 border-t border-baluarte-luz/10 bg-white/95 backdrop-blur-xl z-20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               <div className="text-center sm:text-left">
                 <p className="text-[10px] uppercase text-baluarte-text/40 tracking-widest font-bold mb-1">Investimento Social</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl md:text-5xl font-serif text-baluarte-vida">R$ {product.price}</span>
+                <div className="flex items-baseline gap-2 justify-center sm:justify-start">
+                  <span className="text-4xl font-serif text-baluarte-vida">R$ {product.price}</span>
                 </div>
                 <p className="text-[10px] text-baluarte-luz font-bold uppercase mt-1">Acesso vitalício & atualizações</p>
               </div>
@@ -298,19 +295,19 @@ function ProductModal({ product, onClose }) {
               <motion.a
                 href={product.checkoutUrl} target="_blank" rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-12 bg-baluarte-vida text-white py-5 rounded-full flex items-center justify-center gap-4 font-bold tracking-widest uppercase text-xs shadow-2xl shadow-baluarte-vida/20 hover:bg-baluarte-vida/95 transition-all"
+                className="w-full sm:w-auto px-10 bg-baluarte-vida text-white py-5 rounded-full flex items-center justify-center gap-4 font-bold tracking-widest uppercase text-[10px] md:text-xs shadow-2xl shadow-baluarte-vida/20 hover:bg-baluarte-vida/95 transition-all"
               >
-                Adquirir e Transformar Vidas <ArrowRight size={16} />
+                Quero meu material agora <ArrowRight size={16} />
               </motion.a>
             </div>
-            <p className="text-center mt-6 text-[10px] text-baluarte-text/30 uppercase tracking-[0.4em] font-medium">
+            <p className="text-center mt-4 text-[9px] text-baluarte-text/30 uppercase tracking-[0.4em] font-medium">
               Transação Protegida via Caktos • Download Imediato
             </p>
           </div>
         </div>
       </motion.div>
 
-      {/* OVERLAY DE ZOOM */}
+      {/* ZOOM OVERLAY (FULLSCREEN REAL) */}
       <AnimatePresence>
         {isZoomed && (
           <motion.div 
@@ -321,9 +318,9 @@ function ProductModal({ product, onClose }) {
             <button className="absolute top-10 right-10 text-white hover:scale-110 transition-transform scale-150"><ZoomOut /></button>
             <motion.img 
               initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
-              src={images[activeImg]} className="max-w-full max-h-full object-contain shadow-2xl" 
+              src={images[activeImg]} className="max-w-full max-h-full object-contain shadow-2xl shadow-black" 
             />
-            <p className="absolute bottom-10 text-white/30 text-xs tracking-widest uppercase italic">Toque para retornar</p>
+            <p className="absolute bottom-10 text-white/30 text-xs tracking-widest uppercase italic">Pressione para retornar</p>
           </motion.div>
         )}
       </AnimatePresence>
