@@ -56,36 +56,48 @@ export default function VolunteerCall() {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-8 justify-center md:justify-start items-center">
-              {/* Botão Principal: O "Sim" Emocional */}
-              <motion.a
-                href="https://forms.gle/your-form-link"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                animate={{ 
-                  boxShadow: ["0px 0px 0px 0px rgba(212, 163, 115, 0)", "0px 0px 0px 20px rgba(212, 163, 115, 0.1)", "0px 0px 0px 0px rgba(212, 163, 115, 0)"] 
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="
-                  bg-baluarte-vida text-white 
-                  px-10 py-5 rounded-full 
-                  font-bold tracking-widest uppercase text-xs
-                  shadow-2xl shadow-baluarte-vida/20
-                  hover:bg-baluarte-vida/95 transition-all 
-                  flex items-center gap-3
-                "
-              >
-                <Sparkles className="w-4 h-4 text-baluarte-luz" />
-                Quero estender minha mão
-              </motion.a>
+           <div className="flex flex-col sm:flex-row gap-8 justify-center md:justify-start items-center">
+  {/* Botão Principal: O "Sim" Emocional via WhatsApp */}
+  <motion.a
+    href={`https://wa.me/5588982228665?text=${encodeURIComponent(
+      "Olá! Vi a página da Missão Baluarte e gostei muito do movimento. Gostaria de saber o que posso fazer para ser um voluntário e ajudar!"
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    animate={{ 
+      boxShadow: [
+        "0px 0px 0px 0px rgba(212, 163, 115, 0)", 
+        "0px 0px 0px 20px rgba(212, 163, 115, 0.1)", 
+        "0px 0px 0px 0px rgba(212, 163, 115, 0)"
+      ] 
+    }}
+    transition={{ duration: 3, repeat: Infinity }}
+    className="
+      bg-baluarte-vida text-white 
+      px-10 py-5 rounded-full 
+      font-bold tracking-widest uppercase text-xs
+      shadow-2xl shadow-baluarte-vida/20
+      hover:bg-baluarte-vida/95 transition-all 
+      flex items-center gap-3
+    "
+  >
+    <Sparkles className="w-4 h-4 text-baluarte-luz" />
+    Quero estender minha mão
+  </motion.a>
 
-              {/* Botão Secundário: Inclusivo */}
-              <button className="text-baluarte-text/50 font-sans text-sm font-medium hover:text-baluarte-luz transition-all uppercase tracking-widest">
-                Como posso ajudar hoje?
-              </button>
-            </div>
+  {/* Botão Secundário: Direcionando para o Formulário */}
+  <motion.a 
+    href="https://docs.google.com/forms/d/e/1FAIpQLSdFK0tGtkRgZkbE65s8wOoSNHssbOWPxNXv4bQ49R5eQpms4w/viewform?usp=dialog"
+    target="_blank"
+    rel="noopener noreferrer"
+    whileHover={{ color: "#D4A373" }}
+    className="text-baluarte-text/50 font-sans text-sm font-medium transition-all uppercase tracking-widest cursor-pointer"
+  >
+    Como posso ajudar hoje?
+  </motion.a>
+</div>
           </motion.div>
         </div>
       </div>

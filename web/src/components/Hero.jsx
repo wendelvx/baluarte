@@ -93,15 +93,22 @@ export default function Hero({ images = [] }) {
           className="w-full flex flex-col items-center"
         >
           <a
-            href="#about"
-            className="group relative bg-white text-baluarte-vida px-10 md:px-16 py-5 md:py-6 rounded-full transition-all duration-500 shadow-2xl flex items-center justify-center gap-4 w-fit overflow-hidden hover:scale-105 active:scale-95"
-          >
-            <div className="absolute inset-0 bg-baluarte-luz w-0 group-hover:w-full transition-all duration-500 ease-out" />
-            <span className="relative z-10 font-sans font-bold tracking-[0.2em] uppercase text-[10px] md:text-xs group-hover:text-white transition-colors duration-500">
-              Quero abraçar esta causa
-            </span>
-            <ArrowRight size={16} className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </a>
+  href={`https://wa.me/5588982228665?text=${encodeURIComponent(
+    "Olá! Estive no site da Missão Baluarte e senti meu coração tocado. Quero abraçar esta causa e entender como posso ajudar!"
+  )}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group relative bg-white text-baluarte-vida px-10 md:px-16 py-5 md:py-6 rounded-full transition-all duration-500 shadow-2xl flex items-center justify-center gap-4 w-fit overflow-hidden hover:scale-105 active:scale-95"
+>
+  {/* Efeito de preenchimento ao hover */}
+  <div className="absolute inset-0 bg-baluarte-luz w-0 group-hover:w-full transition-all duration-500 ease-out" />
+  
+  <span className="relative z-10 font-sans font-bold tracking-[0.2em] uppercase text-[10px] md:text-xs group-hover:text-white transition-colors duration-500">
+    Quero abraçar esta causa
+  </span>
+  
+  <ArrowRight size={16} className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1" />
+</a>
           
           <p className="font-sans text-white/40 text-[9px] md:text-[10px] mt-4 md:mt-6 uppercase tracking-[0.3em]">
             Onde o seu sim encontra a vida deles.

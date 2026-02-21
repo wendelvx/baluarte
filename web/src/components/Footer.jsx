@@ -75,19 +75,21 @@ export default function Footer({ contact }) {
             <h3 className="text-baluarte-bg font-serif text-3xl mb-8 tracking-tight text-center">Fale com a Missão</h3>
             {rawPhoneNumber ? (
               <div className="flex flex-col items-center gap-4">
-                <motion.a
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  href={`https://wa.me/${rawPhoneNumber}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-4 px-10 py-4 rounded-full border border-baluarte-luz/40 text-baluarte-luz hover:bg-baluarte-luz hover:text-baluarte-text transition-all duration-700 font-sans text-xs font-bold tracking-[0.2em] uppercase shadow-lg shadow-baluarte-luz/5"
-                >
-                  <Phone className="w-4 h-4" />
-                  {formattedPhone}
-                </motion.a>
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-baluarte-luz/40">Atendimento Humanizado</p>
-              </div>
+  <motion.a
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    href={`https://wa.me/5588982228665?text=${encodeURIComponent(
+      "Olá! Gostaria de tirar algumas dúvidas e saber mais sobre como posso fazer parte e apoiar a Missão Baluarte."
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center gap-4 px-10 py-4 rounded-full border border-baluarte-luz/40 text-baluarte-luz hover:bg-baluarte-luz hover:text-baluarte-text transition-all duration-700 font-sans text-xs font-bold tracking-[0.2em] uppercase shadow-lg shadow-baluarte-luz/5"
+  >
+    <Phone className="w-4 h-4" />
+    {formattedPhone}
+  </motion.a>
+  <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-baluarte-luz/40">Atendimento Humanizado</p>
+</div>
             ) : (
               <p className="text-sm font-sans tracking-widest">contato@missaobaluarte.org</p>
             )}
