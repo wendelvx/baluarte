@@ -87,7 +87,7 @@ export default function Hero({ images = [] }) {
           
           {/* O Texto com Drop Shadow para contraste direto */}
           <p className="font-sans text-white text-base md:text-xl lg:text-2xl leading-relaxed antialiased drop-shadow-lg relative z-10">
-            Cada criança é uma promessa sagrada que espera por alguém que a veja de verdade. 
+            Cada vida é uma promessa divina que espera por alguém que a veja de verdade. 
             <span className="hidden sm:inline text-baluarte-luz font-medium"> A Missão Baluarte devolve </span> 
             o direito de pertencer, de sorrir e de ser amado.
           </p>

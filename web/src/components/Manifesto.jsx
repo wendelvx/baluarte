@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  BookOpen, Heart, Users, Stethoscope, GraduationCap, Handshake, Sparkles 
+  BookOpen, Heart, Users, Stethoscope, GraduationCap, Handshake, Sparkles,
+  Target, Compass, ShieldCheck 
 } from 'lucide-react'
 
+// Dados mantidos conforme original
 const atuacoes = [
   {
     icon: <GraduationCap className="w-6 h-6" />,
@@ -49,13 +51,20 @@ const atuacoes = [
   }
 ]
 
-export default function Manifesto() {
+export default function Manifesto({ essence }) {
+  // Ícones maiores para destaque
+  const essenceIcons = {
+    mission: <Target className="w-8 h-8" />,
+    vision: <Compass className="w-8 h-8" />,
+    values: <ShieldCheck className="w-8 h-8" />
+  }
+
   return (
     <section id="about" className="py-24 md:py-32 bg-baluarte-bg overflow-hidden">
       <div className="max-w-7xl mx-auto px-8">
         
-        {/* Cabeçalho Narrative */}
-        <div className="flex flex-col md:flex-row gap-12 mb-24 items-start">
+        {/* 1. Cabeçalho Narrative (Mantido) */}
+        <div className="flex flex-col md:flex-row gap-12 mb-20 items-start">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -63,10 +72,10 @@ export default function Manifesto() {
             transition={{ duration: 1 }}
             className="md:w-1/2"
           >
-            <span className="text-baluarte-luz font-sans text-xs tracking-[0.4em] uppercase mb-4 block font-bold">Nossa Promessa</span>
+            <span className="text-baluarte-luz font-sans text-xs tracking-[0.4em] uppercase mb-4 block font-bold">Nossa Essência</span>
             <h2 className="text-4xl md:text-6xl text-baluarte-vida font-serif leading-tight">
               Onde cada vida é um <br />
-              <span className="italic text-baluarte-luz">sonho que escolhemos proteger.</span>
+              <span className="italic text-baluarte-luz">propósito que escolhemos proteger.</span>
             </h2>
           </motion.div>
           
@@ -77,15 +86,44 @@ export default function Manifesto() {
             transition={{ duration: 1, delay: 0.2 }}
             className="md:w-1/2 md:mt-16 text-baluarte-text/70 text-lg leading-relaxed font-sans italic border-l border-baluarte-luz/20 pl-6"
           >
-            <p >
-  "No bater de cada pequeno coração, protegemos a vida e a pureza de cada criança que abraçamos. <br />
-  Não entregamos apenas serviços; oferecemos o colo que acolhe para que <br />
-  <span className="text-baluarte-vida font-bold">sonhos esquecidos possam, enfim, florescer em direção ao amanhã.</span>"
-</p>
+            <p>
+              "No bater de cada pequeno coração, protegemos a vida e a pureza de cada criança que abraçamos. <br />
+              <span className="text-baluarte-vida font-bold">Propósitos sagrados que florescem para o amanhã.</span>"
+            </p>
           </motion.div>
         </div>
 
-        {/* Grid de Cards Interativos */}
+        {/* 2. SEÇÃO EXPANDIDA: Missão, Visão e Valores */}
+        {essence && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-28">
+            {Object.entries(essence).map(([key, value]) => (
+              <div 
+                key={key} 
+                className="flex flex-col items-center text-center p-10 md:p-12 bg-white/60 rounded-[2.5rem] border border-baluarte-luz/10 shadow-sm"
+              >
+                <div className="text-baluarte-luz mb-6 bg-baluarte-bg p-4 rounded-2xl shadow-inner">
+                  {essenceIcons[key]}
+                </div>
+                <div>
+                  <h4 className="font-serif text-3xl text-baluarte-vida capitalize mb-4">
+                    {key === 'mission' ? 'Missão' : key === 'vision' ? 'Visão' : 'Valores'}
+                  </h4>
+                  <p className="text-sm md:text-base text-baluarte-text/70 leading-relaxed font-sans font-medium">
+                    {value}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 3. Título dos Pilares (Mantido) */}
+        <div className="mb-12 text-center md:text-left">
+           <span className="text-baluarte-luz font-sans text-[10px] tracking-[0.4em] uppercase font-bold mb-2 block">Nossas Frentes</span>
+           <h3 className="text-3xl font-serif text-baluarte-vida">Pilares de Atuação</h3>
+        </div>
+
+        {/* Grid de Cards Interativos (Exatamente como você gosta) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {atuacoes.map((item, idx) => (
             <CardImpacto key={idx} item={item} index={idx} />
@@ -110,7 +148,6 @@ function CardImpacto({ item, index }) {
     >
       <AnimatePresence mode="wait">
         {!isTapped ? (
-          /* FRENTE: Informativa */
           <motion.div 
             key="front"
             initial={{ opacity: 0 }}
@@ -121,14 +158,9 @@ function CardImpacto({ item, index }) {
             <div className="w-14 h-14 rounded-2xl bg-baluarte-bg flex items-center justify-center text-baluarte-vida border border-baluarte-luz/20 shadow-inner">
               {item.icon}
             </div>
-            
             <div>
               <h4 className="font-serif text-3xl text-baluarte-vida mb-4">{item.title}</h4>
-              <p className="text-base text-baluarte-text/60 leading-relaxed font-sans mb-8">
-                {item.description}
-              </p>
-              
-              {/* Indicador Mobile: Mostra que é clicável */}
+              <p className="text-base text-baluarte-text/60 leading-relaxed font-sans mb-8">{item.description}</p>
               <div className="flex items-center gap-2 text-baluarte-luz md:hidden">
                 <Sparkles className="w-4 h-4 animate-pulse" />
                 <span className="text-[10px] uppercase tracking-widest font-bold">Toque para sentir</span>
@@ -136,7 +168,6 @@ function CardImpacto({ item, index }) {
             </div>
           </motion.div>
         ) : (
-          /* VERSO: Emocional */
           <motion.div 
             key="back"
             initial={{ opacity: 0, scale: 1.1 }}
@@ -145,41 +176,18 @@ function CardImpacto({ item, index }) {
             transition={{ duration: 0.6 }}
             className="absolute inset-0 z-30"
           >
-            <img 
-              src={item.bgImage} 
-              alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ willChange: 'transform' }}
-            />
-            
-            {/* Gradiente Cinematográfico */}
+            <img src={item.bgImage} alt={item.title} className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-baluarte-vida/95 via-baluarte-vida/40 to-transparent" />
-            
             <div className="absolute inset-0 p-10 flex flex-col justify-end items-center text-center pb-16">
-              <motion.div
-                 initial={{ scaleX: 0 }}
-                 animate={{ scaleX: 1 }}
-                 className="w-16 h-[1px] bg-baluarte-luz mb-6"
-              />
-              <p className="text-white font-serif italic text-2xl md:text-3xl leading-tight drop-shadow-xl antialiased">
-                "{item.vision}"
-              </p>
-              
-              <span className="mt-8 text-[10px] text-white/50 uppercase tracking-[0.3em] font-bold md:hidden">
-                Toque para voltar
-              </span>
+              <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="w-16 h-[1px] bg-baluarte-luz mb-6" />
+              <p className="text-white font-serif italic text-2xl md:text-3xl leading-tight drop-shadow-xl antialiased">"{item.vision}"</p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Hover Effect para Desktop (Mantido por CSS para performance) */}
       <div className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-40 pointer-events-none">
-        <img 
-          src={item.bgImage} 
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" 
-          alt=""
-        />
+        <img src={item.bgImage} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" alt="" />
         <div className="absolute inset-0 bg-gradient-to-t from-baluarte-vida/95 via-baluarte-vida/40 to-transparent" />
         <div className="absolute inset-0 p-10 flex flex-col justify-end items-center text-center pb-16">
           <div className="w-16 h-[1px] bg-baluarte-luz mb-6" />

@@ -6,6 +6,7 @@ import { client } from './sanity'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Manifesto from './components/Manifesto'
+import Activities from './components/Activities' // <-- Importando o novo componente
 import VolunteerCall from './components/VolunteerCall'
 import ShopTeaser from './components/ShopTeaser'
 import Footer from './components/Footer'
@@ -14,7 +15,6 @@ function App() {
   const [homeData, setHomeData] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Configuração da Progress Bar
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -23,46 +23,50 @@ function App() {
   })
 
   useEffect(() => {
-    const query = '*[_type == "homePage"][0]'
+    // A query permanece poderosa, buscando tudo o que definimos nos Schemas
+    const query = `*[_type == "homePage"][0]{
+      ...,
+      "featuredProjects": featuredProjects[]->{
+        title,
+        mainImage,
+        summary,
+        description
+      },
+      "products": *[_type == "product"]{
+        title,
+        category,
+        price,
+        checkoutUrl,
+        mainImage,
+        gallery,
+        tagline,
+        about,
+        customSection,
+        features,
+        faq
+      }
+    }`
 
     client
       .fetch(query)
       .then((data) => {
         if (!data) throw new Error('Dados não encontrados')
         setHomeData(data)
+        console.log("Dados carregados com sucesso! 🦅", data)
       })
       .catch((error) => console.error('Erro Sanity:', error))
       .finally(() => {
-        // Pequeno delay para garantir que a transição do loading seja suave
         setTimeout(() => setLoading(false), 800)
       })
   }, [])
 
-  // Skeleton Loading Premium & Humilde
   if (loading) {
     return (
       <div className="bg-baluarte-bg min-h-screen flex flex-col items-center justify-center p-8 text-center">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="flex flex-col items-center"
-        >
-          {/* Spinner elegante nas cores da marca */}
-          <div className="w-16 h-16 border-4 border-baluarte-luz/20 border-t-baluarte-vida rounded-full animate-spin mb-8 shadow-2xl shadow-baluarte-vida/10" />
-          
-          {/* Mensagem de Impacto Suave */}
-          <motion.div
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <p className="font-serif italic text-baluarte-vida text-2xl md:text-3xl tracking-wide leading-tight">
-              Semeando o amor
-            </p>
-            <span className="text-baluarte-luz font-sans text-[10px] uppercase tracking-[0.5em] font-bold mt-3 block antialiased">
-              que transforma vidas
-            </span>
-          </motion.div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-baluarte-luz/20 border-t-baluarte-vida rounded-full animate-spin mb-8 shadow-xl shadow-baluarte-vida/10" />
+          <p className="font-serif italic text-baluarte-vida text-2xl">Semeando o amor</p>
+          <span className="text-baluarte-luz font-sans text-[10px] uppercase tracking-[0.5em] font-bold mt-3">que transforma propósitos</span>
         </motion.div>
       </div>
     )
@@ -72,32 +76,30 @@ function App() {
 
   return (
     <div className="bg-baluarte-bg font-sans selection:bg-baluarte-luz/30">
-      
-      {/* Progress Bar Dourada no Topo */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-[3px] bg-baluarte-luz z-[60] origin-[0%]"
-        style={{ scaleX }}
-      />
+      <motion.div className="fixed top-0 left-0 right-0 h-[3px] bg-baluarte-luz z-[60] origin-[0%]" style={{ scaleX }} />
 
-      <Header />
+      <Header logo={homeData.logo} conm={homeData.conmSection} />
 
       <main>
-        {/* 1. Hero: O Impacto Visual */}
+        {/* 1. Impacto Visual */}
         {homeData.carouselImages?.length > 0 && (
           <Hero images={homeData.carouselImages} />
         )}
 
-        {/* 2. Manifesto: A Nossa Essência */}
-        <Manifesto />
+        {/* 2. O Coração (Manifesto): Agora focado na Essência e Pilares Fixos */}
+        <Manifesto essence={homeData.essence} />
 
-        {/* 3. O Chamado: Conversão para Voluntariado */}
-        <VolunteerCall />
+        {/* 3. As Mãos (Activities): Projetos dinâmicos do Sanity */}
+        <Activities projects={homeData.featuredProjects} />
 
-        {/* 4. Shop: Apoio através de produtos */}
-        <ShopTeaser />
+        {/* 4. O Chamado (Volunteer): Ajustado com os fluxos de doação */}
+        <VolunteerCall flows={homeData.donationFlows} />
+
+        {/* 5. Sementes (Shop): Produtos dinâmicos do Sanity */}
+        <ShopTeaser products={homeData.products} />
       </main>
 
-      <Footer contact={homeData.contactInfo} />
+      <Footer contact={homeData.contactInfo} conm={homeData.conmSection} />
     </div>
   )
 }
