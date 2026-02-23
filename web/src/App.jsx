@@ -6,7 +6,7 @@ import { client } from './sanity'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Manifesto from './components/Manifesto'
-import Activities from './components/Activities' // <-- Importando o novo componente
+import Activities from './components/Activities'
 import VolunteerCall from './components/VolunteerCall'
 import ShopTeaser from './components/ShopTeaser'
 import Footer from './components/Footer'
@@ -23,16 +23,17 @@ function App() {
   })
 
   useEffect(() => {
-    // A query permanece poderosa, buscando tudo o que definimos nos Schemas
     const query = `*[_type == "homePage"][0]{
       ...,
       "featuredProjects": featuredProjects[]->{
+        _id,
         title,
         mainImage,
         summary,
         description
       },
       "products": *[_type == "product"]{
+        _id,
         title,
         category,
         price,
@@ -81,21 +82,24 @@ function App() {
       <Header logo={homeData.logo} conm={homeData.conmSection} />
 
       <main>
-        {/* 1. Impacto Visual */}
+        {/* 1. Hero: Agora recebe donationFlows para o link de voluntário */}
         {homeData.carouselImages?.length > 0 && (
-          <Hero images={homeData.carouselImages} />
+          <Hero 
+            images={homeData.carouselImages} 
+            donationFlows={homeData.donationFlows} 
+          />
         )}
 
-        {/* 2. O Coração (Manifesto): Agora focado na Essência e Pilares Fixos */}
+        {/* 2. Manifesto */}
         <Manifesto essence={homeData.essence} />
 
-        {/* 3. As Mãos (Activities): Projetos dinâmicos do Sanity */}
+        {/* 3. Activities */}
         <Activities projects={homeData.featuredProjects} />
 
-        {/* 4. O Chamado (Volunteer): Ajustado com os fluxos de doação */}
+        {/* 4. Volunteer Call */}
         <VolunteerCall flows={homeData.donationFlows} />
 
-        {/* 5. Sementes (Shop): Produtos dinâmicos do Sanity */}
+        {/* 5. Shop Teaser */}
         <ShopTeaser products={homeData.products} />
       </main>
 

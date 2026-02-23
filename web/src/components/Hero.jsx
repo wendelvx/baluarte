@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { urlFor } from '../sanity'
 
-export default function Hero({ images = [] }) {
+// Adicionamos 'donationFlows' aqui para receber os dados do objeto do Sanity
+export default function Hero({ images = [], donationFlows }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const containerRef = useRef(null)
 
@@ -11,11 +12,7 @@ export default function Hero({ images = [] }) {
     offset: ["start start", "end start"]
   })
 
-  // AJUSTE DE RETENÇÃO: Agora o conteúdo fica 100% visível até 60% do scroll (0.6)
-  // e termina de sumir apenas em 95% (0.95), evitando que o botão suma rápido demais.
   const opacityContent = useTransform(scrollYProgress, [0, 0.6, 0.95], [1, 1, 0])
-  
-  // Parallax mais sutil para não "expulsar" o texto da tela muito rápido
   const yText = useTransform(scrollYProgress, [0, 1], [0, -60])
   const yImage = useTransform(scrollYProgress, [0, 1], ["0%", "15%"])
 
@@ -34,7 +31,6 @@ export default function Hero({ images = [] }) {
       ref={containerRef}
       className="relative w-full h-[100svh] min-h-[700px] overflow-hidden bg-[#050505] flex items-center justify-center"
     >
-      {/* Camada de Imagens (Fundo) */}
       <motion.div style={{ y: yImage }} className="absolute inset-0 z-0">
         <AnimatePresence mode="popLayout">
           <motion.img
@@ -49,16 +45,13 @@ export default function Hero({ images = [] }) {
         </AnimatePresence>
       </motion.div>
 
-      {/* Scrims de Proteção Editorial - Mantidos para contraste geral */}
-      <div className="absolute inset-0 z-10 bg-black/30" /> {/* Reduzi um pouco de 40% para 30% */}
+      <div className="absolute inset-0 z-10 bg-black/30" />
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/60 via-transparent to-baluarte-bg" />
 
-      {/* Conteúdo Centralizado Responsivo com Ajuste de Header (pt-24 md:pt-32) */}
       <motion.div 
         style={{ opacity: opacityContent, y: yText }}
         className="relative z-20 w-full max-w-6xl px-6 flex flex-col items-center justify-center text-center pt-24 md:pt-32"
       >
-        {/* Label Superior */}
         <motion.span
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,33 +61,22 @@ export default function Hero({ images = [] }) {
           Um encontro que muda destinos
         </motion.span>
 
-        {/* Título Principal - Com Drop Shadow para leitura sem box */}
         <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white leading-[1.1] mb-6 md:mb-8 drop-shadow-2xl">
           Ninguém nasce para <br /> 
           <span className="italic text-baluarte-luz font-normal">ser esquecido por Deus.</span>
         </h1>
 
-        {/* --- SOLUÇÃO ELEGANTE PARA O BLOCO DE TEXTO --- */}
         <div className="relative inline-block w-full max-w-3xl px-6 md:px-12 py-8 md:py-10 mb-8 md:mb-12 group">
-          
-          {/* Camada 1: Blur Extremo e Cor Super Sutil (Vidro) */}
-          {/* Removi a borda, aumentei o blur para 'xl', mudei a cor para o bg da marca muito transparente */}
           <div className="absolute inset-0 bg-[#050505]/20 backdrop-blur-2xl rounded-3xl md:rounded-[3rem] -z-20 transition-all duration-1000 group-hover:bg-[#050505]/30" />
-          
-          {/* Camada 2: Gradiente Suave nas Bordas (Vignette Interna) */}
-          {/* Isso faz com que as bordas superior/inferior do "vidro" desapareçam suavemente */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/10 to-transparent rounded-3xl md:rounded-[3rem] -z-10" />
           
-          {/* O Texto com Drop Shadow para contraste direto */}
           <p className="font-sans text-white text-base md:text-xl lg:text-2xl leading-relaxed antialiased drop-shadow-lg relative z-10">
             Cada vida é uma promessa divina que espera por alguém que a veja de verdade. 
             <span className="hidden sm:inline text-baluarte-luz font-medium"> A Missão Baluarte devolve </span> 
             o direito de pertencer, de sorrir e de ser amado.
           </p>
         </div>
-        {/* --------------------------------------------- */}
 
-        {/* CTA Premium */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,14 +84,12 @@ export default function Hero({ images = [] }) {
           className="w-full flex flex-col items-center"
         >
           <a
-            href={`https://wa.me/5588982228665?text=${encodeURIComponent(
-              "Olá! Estive no site da Missão Baluarte e senti meu coração tocado. Quero abraçar esta causa e entender como posso ajudar!"
-            )}`}
+            // AQUI: Link alterado para apontar para o formulário configurado no Sanity
+            href={donationFlows?.volunteerFormUrl || "#"}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative bg-white text-baluarte-vida px-10 md:px-16 py-5 md:py-6 rounded-full transition-all duration-500 shadow-2xl flex items-center justify-center gap-4 w-fit overflow-hidden hover:scale-105 active:scale-95"
           >
-            {/* Efeito de preenchimento ao hover */}
             <div className="absolute inset-0 bg-baluarte-luz w-0 group-hover:w-full transition-all duration-500 ease-out" />
             
             <span className="relative z-10 font-sans font-bold tracking-[0.2em] uppercase text-[10px] md:text-xs group-hover:text-white transition-colors duration-500">
@@ -118,8 +98,6 @@ export default function Hero({ images = [] }) {
             
             <ArrowRight size={16} className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </a>
-          
-          
         </motion.div>
       </motion.div>
 
