@@ -4,7 +4,7 @@ import { X, ArrowRight, Info, ChevronLeft, ChevronRight } from 'lucide-react'
 import { urlFor } from '../sanity'
 import { PortableText } from '@portabletext/react'
 
-// Versão Ultra-Light do carregamento de imagem
+// SmartImage ultra performática
 function SmartImage({ src, alt, className }) {
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -133,20 +133,32 @@ export default function Activities({ projects }) {
 
 function ProjectModal({ project, onClose }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-baluarte-vida/95 backdrop-blur-md" />
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 md:p-8">
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }} 
+        onClick={onClose} 
+        className="absolute inset-0 bg-baluarte-vida/98 backdrop-blur-md" 
+      />
 
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-5xl bg-baluarte-bg rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-full max-h-[90vh]"
+        initial={{ opacity: 0, scale: 0.95 }} 
+        animate={{ opacity: 1, scale: 1 }} 
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="relative w-full max-w-5xl bg-baluarte-bg rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-full max-h-[90vh] z-[160]"
       >
-        {/* BOTÃO X CORRIGIDO: Agora com fundo sólido e cor da marca para máxima visibilidade */}
+        {/* BOTÃO X BLINDADO: Aumentei o z-index e forcei o fundo sólido da marca com fallback */}
         <button 
-          onClick={onClose} 
-          className="absolute top-6 right-6 z-[110] p-3 bg-baluarte-vida text-white rounded-full shadow-2xl hover:scale-110 transition-transform active:scale-90 border border-white/20"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="absolute top-6 right-6 z-[200] p-4 bg-baluarte-vida text-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all flex items-center justify-center border border-white/30"
+          style={{ backgroundColor: '#8B2635' }} // Fallback manual para o vinho da Baluarte se a classe falhar
           aria-label="Fechar"
         >
-          <X size={24} strokeWidth={3} />
+          <X size={24} strokeWidth={3} className="text-white" />
         </button>
 
         <div className="w-full md:w-1/2 h-72 md:h-auto relative shrink-0">
