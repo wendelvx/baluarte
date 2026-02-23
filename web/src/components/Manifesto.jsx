@@ -104,13 +104,28 @@ export default function Manifesto({ essence }) {
                 <div className="text-baluarte-luz mb-6 bg-baluarte-bg p-4 rounded-2xl shadow-inner">
                   {essenceIcons[key]}
                 </div>
-                <div>
-                  <h4 className="font-serif text-3xl text-baluarte-vida capitalize mb-4">
+                <div className="w-full">
+                  <h4 className="font-serif text-3xl text-baluarte-vida capitalize mb-6">
                     {key === 'mission' ? 'Missão' : key === 'vision' ? 'Visão' : 'Valores'}
                   </h4>
-                  <p className="text-sm md:text-base text-baluarte-text/70 leading-relaxed font-sans font-medium">
-                    {value}
-                  </p>
+                  
+                  {/* Tratamento especial para Valores: transforma em tags/pílulas */}
+                  {key === 'values' ? (
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {value.split(/[ ,]+/).filter(v => v.length > 0).map((val, i) => (
+                        <span 
+                          key={i} 
+                          className="px-4 py-2 bg-baluarte-vida/5 border border-baluarte-vida/10 rounded-full text-xs md:text-sm text-baluarte-vida font-sans font-bold tracking-wide transition-all hover:bg-baluarte-vida/10"
+                        >
+                          {val}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm md:text-base text-baluarte-text/70 leading-relaxed font-sans font-medium">
+                      {value}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
@@ -123,7 +138,7 @@ export default function Manifesto({ essence }) {
            <h3 className="text-3xl font-serif text-baluarte-vida">Pilares de Atuação</h3>
         </div>
 
-        {/* Grid de Cards Interativos (Exatamente como você gosta) */}
+        {/* Grid de Cards Interativos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {atuacoes.map((item, idx) => (
             <CardImpacto key={idx} item={item} index={idx} />

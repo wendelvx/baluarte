@@ -6,6 +6,36 @@ import {
 } from 'lucide-react'
 import { urlFor } from '../sanity'
 
+// Componente de Pré-loading "Sementes de Amor" (Mantido)
+function SmartImage({ src, alt, className, objectFit = 'object-contain' }) {
+  const [isLoaded, setIsLoaded] = useState(false)
+  return (
+    <div className="relative w-full h-full overflow-hidden bg-baluarte-luz/5">
+      <AnimatePresence>
+        {!isLoaded && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-10"
+          >
+            <motion.div
+              animate={{ backgroundColor: ["#F3EFE6", "#E8D9C5", "#F3EFE6"] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-full h-full"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <img
+        src={src}
+        alt={alt}
+        onLoad={() => setIsLoaded(true)}
+        className={`${className} ${objectFit} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000`}
+      />
+    </div>
+  )
+}
+
 export default function ShopTeaser({ products }) {
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -27,19 +57,13 @@ export default function ShopTeaser({ products }) {
   const maxIndex = Math.max(0, products.length - itemsPerPage)
 
   const nextSlide = () => {
-    if (currentIndex < maxIndex) {
-      setCurrentIndex(prev => prev + 1)
-    } else {
-      setCurrentIndex(0) 
-    }
+    if (currentIndex < maxIndex) setCurrentIndex(prev => prev + 1)
+    else setCurrentIndex(0) 
   }
 
   const prevSlide = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1)
-    } else {
-      setCurrentIndex(maxIndex)
-    }
+    if (currentIndex > 0) setCurrentIndex(prev => prev - 1)
+    else setCurrentIndex(maxIndex)
   }
 
   const getStep = () => {
@@ -47,6 +71,10 @@ export default function ShopTeaser({ products }) {
     if (itemsPerPage === 2) return 50
     return 100
   }
+
+  // Lógica de Swipe
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 
   return (
     <section id="shop" className="py-24 md:py-32 bg-baluarte-bg scroll-mt-20 overflow-hidden">
@@ -65,51 +93,55 @@ export default function ShopTeaser({ products }) {
 
           {products.length > itemsPerPage && (
             <div className="flex gap-4 pb-4">
-              <button 
-                onClick={prevSlide}
-                className="w-12 h-12 rounded-full border border-baluarte-luz/20 flex items-center justify-center text-baluarte-vida hover:bg-baluarte-luz hover:text-white transition-all shadow-sm"
-              >
+              <button onClick={prevSlide} className="w-12 h-12 rounded-full border border-baluarte-luz/20 flex items-center justify-center text-baluarte-vida hover:bg-baluarte-luz hover:text-white transition-all shadow-sm active:scale-90">
                 <ChevronLeft size={20} />
               </button>
-              <button 
-                onClick={nextSlide}
-                className="w-12 h-12 rounded-full border border-baluarte-luz/20 flex items-center justify-center text-baluarte-vida hover:bg-baluarte-luz hover:text-white transition-all shadow-sm"
-              >
+              <button onClick={nextSlide} className="w-12 h-12 rounded-full border border-baluarte-luz/20 flex items-center justify-center text-baluarte-vida hover:bg-baluarte-luz hover:text-white transition-all shadow-sm active:scale-90">
                 <ChevronRight size={20} />
               </button>
             </div>
           )}
         </div>
 
-        <div className="relative">
+        {/* touchAction pan-y permite que o scroll vertical do celular funcione livremente */}
+        <div className="relative touch-action-pan-y" style={{ touchAction: 'pan-y' }}>
           <motion.div 
-            className="flex gap-8"
-            animate={{ 
-              x: `calc(-${currentIndex * getStep()}% - ${currentIndex * 2}rem)` 
+            className="flex gap-8 cursor-grab active:cursor-grabbing"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.15}
+            onDragEnd={(e, { offset, velocity }) => {
+              const swipe = swipePower(offset.x, velocity.x);
+              if (swipe < -swipeConfidenceThreshold) {
+                nextSlide();
+              } else if (swipe > swipeConfidenceThreshold) {
+                prevSlide();
+              }
             }}
+            animate={{ x: `calc(-${currentIndex * getStep()}% - ${currentIndex * 2}rem)` }}
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
           >
             {products.map((product) => (
               <div 
                 key={product._id || product.title} 
                 onClick={() => setSelectedProduct(product)} 
-                className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] shrink-0 group cursor-pointer"
+                // Impede seleção de texto ou conflitos de clique durante o arraste
+                onPointerDown={(e) => e.stopPropagation()}
+                className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] shrink-0 group cursor-pointer select-none"
               >
-                <div className="relative aspect-[3/4] bg-white rounded-3xl overflow-hidden mb-6 p-6 flex items-center justify-center border border-baluarte-luz/5 shadow-sm group-hover:shadow-2xl transition-all duration-700">
+                <div className="relative aspect-[3/4] bg-white rounded-3xl overflow-hidden mb-6 p-6 flex items-center justify-center border border-baluarte-luz/5 shadow-sm group-hover:shadow-2xl transition-all duration-700 pointer-events-none">
                   {product.mainImage && (
-                    <img 
-                      src={urlFor(product.mainImage).width(500).url()} 
-                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700" 
-                      alt={product.title} 
+                    <SmartImage 
+                      src={urlFor(product.mainImage).width(500).format('webp').url()} 
+                      alt={product.title}
+                      className="w-full h-full group-hover:scale-105 transition-transform duration-700" 
                     />
                   )}
-                  <div className="absolute top-4 right-4 bg-baluarte-vida text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
+                  <div className="absolute top-4 right-4 bg-baluarte-vida text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg z-20">
                     R$ {product.price}
                   </div>
                 </div>
-                {/* Título Centralizado */}
                 <h3 className="font-serif text-2xl text-baluarte-vida text-center">{product.title}</h3>
-                {/* Categoria Centralizada para harmonia */}
                 <p className="text-[10px] uppercase tracking-widest text-baluarte-luz font-bold text-center mt-2 opacity-60">
                   {product.category}
                 </p>
@@ -143,15 +175,17 @@ function ProductModal({ product, onClose }) {
         <div className="w-full md:w-5/12 bg-[#F8F7F4] flex flex-col h-[35vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-baluarte-luz/10">
           <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
             <AnimatePresence mode="wait">
-              <motion.img 
-                key={activeImg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} 
-                src={urlFor(images[activeImg]).width(800).url()} 
-                className="max-w-full max-h-full object-contain drop-shadow-2xl cursor-zoom-in" 
-                onClick={() => setIsZoomed(true)} 
-              />
+              <motion.div key={activeImg} className="w-full h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <SmartImage 
+                  src={urlFor(images[activeImg]).width(800).format('webp').url()} 
+                  alt={product.title} 
+                  className="drop-shadow-2xl cursor-zoom-in"
+                  onClick={() => setIsZoomed(true)}
+                />
+              </motion.div>
             </AnimatePresence>
             {images.length > 1 && (
-              <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
+              <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-20">
                 <button onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev - 1 + images.length) % images.length) }} className="p-2 bg-white rounded-full shadow-lg pointer-events-auto hover:bg-baluarte-vida hover:text-white transition-colors"><ChevronLeft size={18} /></button>
                 <button onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev + 1) % images.length) }} className="p-2 bg-white rounded-full shadow-lg pointer-events-auto hover:bg-baluarte-vida hover:text-white transition-colors"><ChevronRight size={18} /></button>
               </div>
@@ -159,8 +193,8 @@ function ProductModal({ product, onClose }) {
           </div>
           <div className="p-3 flex gap-2 justify-center bg-white/50 border-t border-baluarte-luz/5 overflow-x-auto">
             {images.map((img, i) => (
-              <button key={i} onClick={() => setActiveImg(i)} className={`w-10 h-14 shrink-0 rounded border-2 transition-all ${activeImg === i ? 'border-baluarte-luz scale-105 shadow-md' : 'border-transparent opacity-50'}`}>
-                <img src={urlFor(img).width(100).url()} className="w-full h-full object-cover" />
+              <button key={i} onClick={() => setActiveImg(i)} className={`w-10 h-14 shrink-0 rounded border-2 transition-all overflow-hidden ${activeImg === i ? 'border-baluarte-luz scale-105 shadow-md' : 'border-transparent opacity-50'}`}>
+                <SmartImage src={urlFor(img).width(100).format('webp').url()} alt="mini" objectFit="object-cover" className="w-full h-full" />
               </button>
             ))}
           </div>
@@ -241,7 +275,13 @@ function ProductModal({ product, onClose }) {
       <AnimatePresence>
         {isZoomed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[200] bg-baluarte-text/95 flex items-center justify-center p-4 cursor-zoom-out" onClick={() => setIsZoomed(false)}>
-            <motion.img initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }} src={urlFor(images[activeImg]).url()} className="max-w-full max-h-full object-contain shadow-2xl" />
+            <div className="max-w-full max-h-full">
+               <SmartImage 
+                 src={urlFor(images[activeImg]).url()} 
+                 alt="zoom" 
+                 className="shadow-2xl" 
+               />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
