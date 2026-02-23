@@ -5,7 +5,6 @@ import {
   Target, Compass, ShieldCheck 
 } from 'lucide-react'
 
-// Dados mantidos conforme original
 const atuacoes = [
   {
     icon: <GraduationCap className="w-6 h-6" />,
@@ -52,7 +51,6 @@ const atuacoes = [
 ]
 
 export default function Manifesto({ essence }) {
-  // Ícones maiores para destaque
   const essenceIcons = {
     mission: <Target className="w-8 h-8" />,
     vision: <Compass className="w-8 h-8" />,
@@ -63,7 +61,7 @@ export default function Manifesto({ essence }) {
     <section id="about" className="py-24 md:py-32 bg-baluarte-bg overflow-hidden">
       <div className="max-w-7xl mx-auto px-8">
         
-        {/* 1. Cabeçalho Narrative (Mantido) */}
+        {/* 1. Cabeçalho Narrative */}
         <div className="flex flex-col md:flex-row gap-12 mb-20 items-start">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
@@ -93,32 +91,34 @@ export default function Manifesto({ essence }) {
           </motion.div>
         </div>
 
-        {/* 2. SEÇÃO EXPANDIDA: Missão, Visão e Valores */}
+        {/* 2. SEÇÃO: Missão, Visão e Valores REFORMULADA */}
         {essence && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-28">
             {Object.entries(essence).map(([key, value]) => (
               <div 
                 key={key} 
-                className="flex flex-col items-center text-center p-10 md:p-12 bg-white/60 rounded-[2.5rem] border border-baluarte-luz/10 shadow-sm"
+                className="flex flex-col items-center text-center p-10 md:p-12 bg-white/60 rounded-[2.5rem] border border-baluarte-luz/10 shadow-sm transition-all hover:shadow-md"
               >
-                <div className="text-baluarte-luz mb-6 bg-baluarte-bg p-4 rounded-2xl shadow-inner">
+                <div className="text-baluarte-luz mb-8 bg-baluarte-bg p-4 rounded-2xl shadow-inner">
                   {essenceIcons[key]}
                 </div>
+                
                 <div className="w-full">
                   <h4 className="font-serif text-3xl text-baluarte-vida capitalize mb-6">
                     {key === 'mission' ? 'Missão' : key === 'vision' ? 'Visão' : 'Valores'}
                   </h4>
-                  
-                  {/* Tratamento especial para Valores: transforma em tags/pílulas */}
+
+                  {/* SOLUÇÃO ELEGANTE PARA VALORES: Grade Simétrica com Marcadores */}
                   {key === 'values' ? (
-                    <div className="flex flex-wrap justify-center gap-2">
-                      {value.split(/[ ,]+/).filter(v => v.length > 0).map((val, i) => (
-                        <span 
-                          key={i} 
-                          className="px-4 py-2 bg-baluarte-vida/5 border border-baluarte-vida/10 rounded-full text-xs md:text-sm text-baluarte-vida font-sans font-bold tracking-wide transition-all hover:bg-baluarte-vida/10"
-                        >
-                          {val}
-                        </span>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-3 max-w-[280px] mx-auto">
+                      {value.split(/[ ,;]+/).filter(v => v.length > 0).map((val, i) => (
+                        <div key={i} className="flex items-center gap-2 group">
+                          {/* Marcador Minimalista */}
+                          <div className="w-1.5 h-1.5 rotate-45 bg-baluarte-luz rounded-[1px] shrink-0" />
+                          <span className="text-[11px] md:text-xs uppercase tracking-wider text-baluarte-vida font-sans font-bold text-left leading-none">
+                            {val}
+                          </span>
+                        </div>
                       ))}
                     </div>
                   ) : (
@@ -132,7 +132,7 @@ export default function Manifesto({ essence }) {
           </div>
         )}
 
-        {/* 3. Título dos Pilares (Mantido) */}
+        {/* 3. Título dos Pilares */}
         <div className="mb-12 text-center md:text-left">
            <span className="text-baluarte-luz font-sans text-[10px] tracking-[0.4em] uppercase font-bold mb-2 block">Nossas Frentes</span>
            <h3 className="text-3xl font-serif text-baluarte-vida">Pilares de Atuação</h3>
