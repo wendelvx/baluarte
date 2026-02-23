@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  X, CheckCircle2, Sparkles, Rocket, ArrowRight, 
+  X, CheckCircle2, Rocket, ArrowRight, 
   HelpCircle, ChevronLeft, ChevronRight, ZoomIn
 } from 'lucide-react'
 import { urlFor } from '../sanity'
 
-// Versão Ultra-Light e Veloz de carregamento
+// Versão Ultra-Light e Performática de carregamento
 function SmartImage({ src, alt, className, objectFit = 'object-contain' }) {
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -140,73 +140,93 @@ export default function ShopTeaser({ products }) {
 function ProductModal({ product, onClose }) {
   const [activeImg, setActiveImg] = useState(0)
   const [isZoomed, setIsZoomed] = useState(false)
-  const images = product.gallery?.length > 0 ? product.gallery : [product.mainImage]
+  
+  // LOGICA CORRIGIDA: Inclui a Capa (mainImage) como o primeiro item da galeria
+  const images = [product.mainImage, ...(product.gallery || [])]
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 lg:p-12 overflow-hidden">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-baluarte-text/98 backdrop-blur-2xl" />
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-0 md:p-6 lg:p-12 overflow-hidden">
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }} 
+        onClick={onClose} 
+        className="absolute inset-0 bg-baluarte-text/98 backdrop-blur-2xl" 
+      />
       
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-7xl bg-baluarte-bg md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-full md:h-[85vh]"
+        initial={{ opacity: 0, scale: 0.95 }} 
+        animate={{ opacity: 1, scale: 1 }} 
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="relative w-full max-w-7xl bg-baluarte-bg md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-full md:h-[85vh] z-[130]"
       >
-        {/* BOTÃO X BLINDADO: Fundo sólido e alto Z-Index */}
+        {/* BOTÃO X BLINDADO: Fundo sólido Vinho e alto Z-Index */}
         <button 
           onClick={(e) => { e.stopPropagation(); onClose(); }} 
-          className="absolute top-4 right-4 z-[150] p-3 bg-baluarte-vida text-white rounded-full border border-white/20 hover:scale-110 shadow-2xl transition-all"
+          className="absolute top-4 right-4 z-[200] p-4 bg-baluarte-vida text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center border border-white/30"
           style={{ backgroundColor: '#8B2635' }}
+          aria-label="Fechar"
         >
-          <X size={20} strokeWidth={3} />
+          <X size={24} strokeWidth={3} />
         </button>
         
-        <div className="w-full md:w-5/12 bg-[#F8F7F4] flex flex-col h-[35vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-baluarte-luz/10">
+        <div className="w-full md:w-5/12 bg-[#F8F7F4] flex flex-col h-[40vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-baluarte-luz/10">
           <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
             <AnimatePresence mode="wait">
-              <motion.div key={activeImg} className="w-full h-full flex items-center justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <div onClick={() => setIsZoomed(true)} className="relative group cursor-zoom-in w-full h-full">
-                  <SmartImage 
-                    src={urlFor(images[activeImg]).width(800).format('webp').url()} 
-                    alt={product.title} 
-                    className="drop-shadow-2xl"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <div className="bg-white/90 p-3 rounded-full text-baluarte-vida shadow-xl">
-                      <ZoomIn size={24} />
-                    </div>
-                  </div>
+              <motion.div 
+                key={activeImg} 
+                className="w-full h-full flex items-center justify-center cursor-zoom-in"
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }}
+                onClick={() => setIsZoomed(true)}
+              >
+                <SmartImage 
+                  src={urlFor(images[activeImg]).width(800).format('webp').url()} 
+                  alt={product.title} 
+                  className="drop-shadow-2xl"
+                />
+                <div className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full text-baluarte-vida shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn size={20} />
                 </div>
               </motion.div>
             </AnimatePresence>
 
             {images.length > 1 && (
               <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-20">
-                <button onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev - 1 + images.length) % images.length) }} className="p-2 bg-white rounded-full shadow-lg pointer-events-auto hover:bg-baluarte-vida hover:text-white transition-colors"><ChevronLeft size={18} /></button>
-                <button onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev + 1) % images.length) }} className="p-2 bg-white rounded-full shadow-lg pointer-events-auto hover:bg-baluarte-vida hover:text-white transition-colors"><ChevronRight size={18} /></button>
+                <button onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev - 1 + images.length) % images.length) }} className="p-2 bg-white rounded-full shadow-lg pointer-events-auto hover:bg-baluarte-vida hover:text-white transition-colors active:scale-90"><ChevronLeft size={18} /></button>
+                <button onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev + 1) % images.length) }} className="p-2 bg-white rounded-full shadow-lg pointer-events-auto hover:bg-baluarte-vida hover:text-white transition-colors active:scale-90"><ChevronRight size={18} /></button>
               </div>
             )}
           </div>
           
-          <div className="p-3 flex gap-2 justify-center bg-white/50 border-t border-baluarte-luz/5 overflow-x-auto">
+          <div className="p-3 flex gap-2 justify-center bg-white/50 border-t border-baluarte-luz/5 overflow-x-auto scrollbar-hide">
             {images.map((img, i) => (
-              <button key={i} onClick={() => setActiveImg(i)} className={`w-10 h-14 shrink-0 rounded border-2 transition-all overflow-hidden ${activeImg === i ? 'border-baluarte-luz scale-105 shadow-md' : 'border-transparent opacity-50'}`}>
-                <SmartImage src={urlFor(img).width(100).format('webp').url()} alt="mini" objectFit="object-cover" className="w-full h-full" />
+              <button 
+                key={i} 
+                onClick={() => setActiveImg(i)} 
+                className={`w-12 h-16 shrink-0 rounded-lg border-2 transition-all overflow-hidden ${activeImg === i ? 'border-baluarte-luz scale-105 shadow-md' : 'border-transparent opacity-50 hover:opacity-100'}`}
+              >
+                <SmartImage src={urlFor(img).width(150).format('webp').url()} alt="thumb" objectFit="object-cover" className="w-full h-full" />
               </button>
             ))}
           </div>
         </div>
 
         <div className="w-full md:w-7/12 flex flex-col bg-baluarte-bg relative min-h-0">
-          <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 scrollbar-hide md:scrollbar-default">
+          <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 custom-scrollbar">
             <div className="space-y-12 pb-48">
               <header className="space-y-4">
                 <span className="text-baluarte-luz font-sans text-[10px] tracking-widest uppercase font-bold">{product.category}</span>
                 <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif text-baluarte-vida leading-tight">{product.title}</h2>
-                {product.tagline && <p className="text-baluarte-vida/60 font-serif italic text-lg mt-4 italic">"{product.tagline}"</p>}
+                {product.tagline && <p className="text-baluarte-vida/60 font-serif italic text-lg mt-4">"{product.tagline}"</p>}
               </header>
+
               <section className="space-y-4">
                 <h4 className="text-baluarte-vida font-bold text-[10px] uppercase tracking-widest border-b border-baluarte-luz/10 pb-2">Sobre este material</h4>
                 <p className="text-baluarte-text/80 font-sans text-base leading-relaxed">{product.about}</p>
               </section>
+
               {product.customSection?.items?.length > 0 && (
                 <section className="space-y-6">
                   <h4 className="text-baluarte-vida font-bold text-[10px] uppercase tracking-widest">{product.customSection.title}</h4>
@@ -220,6 +240,7 @@ function ProductModal({ product, onClose }) {
                   </div>
                 </section>
               )}
+
               {product.features?.length > 0 && (
                 <section className="bg-baluarte-vida text-white p-8 md:p-10 rounded-[2.5rem] relative shadow-xl overflow-hidden">
                   <Rocket className="absolute -right-4 -top-4 w-24 h-24 opacity-5 rotate-12" />
@@ -233,6 +254,7 @@ function ProductModal({ product, onClose }) {
                   </div>
                 </section>
               )}
+
               {product.faq?.length > 0 && (
                 <section className="space-y-6">
                   <h4 className="text-baluarte-vida font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
@@ -250,6 +272,7 @@ function ProductModal({ product, onClose }) {
               )}
             </div>
           </div>
+
           <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-white/95 backdrop-blur-xl border-t border-baluarte-luz/10 z-[110]">
             <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto">
               <div className="shrink-0">
@@ -268,14 +291,14 @@ function ProductModal({ product, onClose }) {
         </div>
       </motion.div>
 
-      {/* OVERLAY DE ZOOM FUNCIONAL */}
+      {/* OVERLAY DE ZOOM REINTEGRADO E FLUIDO */}
       <AnimatePresence>
         {isZoomed && (
           <motion.div 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
-            className="fixed inset-0 z-[200] bg-baluarte-text/98 flex items-center justify-center p-4 cursor-zoom-out" 
+            className="fixed inset-0 z-[300] bg-baluarte-text/98 flex items-center justify-center p-4 cursor-zoom-out" 
             onClick={() => setIsZoomed(false)}
           >
             <motion.div 
@@ -287,10 +310,10 @@ function ProductModal({ product, onClose }) {
                <img 
                  src={urlFor(images[activeImg]).url()} 
                  alt="zoom" 
-                 className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-xl" 
+                 className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-2xl border border-white/10" 
                />
-               <button className="absolute top-0 right-0 -mt-12 text-white/60 hover:text-white flex items-center gap-2 text-xs uppercase tracking-widest font-bold">
-                 Clique para fechar <X size={16} />
+               <button className="absolute top-0 right-0 -mt-12 text-white/80 hover:text-white flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-bold transition-colors">
+                 Clique fora para fechar <X size={20} />
                </button>
             </motion.div>
           </motion.div>
