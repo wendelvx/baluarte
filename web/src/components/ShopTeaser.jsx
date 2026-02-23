@@ -2,35 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, CheckCircle2, Sparkles, Rocket, ArrowRight, 
-  HelpCircle, ChevronLeft, ChevronRight, ZoomOut
+  HelpCircle, ChevronLeft, ChevronRight, ZoomIn
 } from 'lucide-react'
 import { urlFor } from '../sanity'
 
-// Componente de Pré-loading "Sementes de Amor" (Mantido)
+// Versão Ultra-Light e Veloz de carregamento
 function SmartImage({ src, alt, className, objectFit = 'object-contain' }) {
   const [isLoaded, setIsLoaded] = useState(false)
+
   return (
-    <div className="relative w-full h-full overflow-hidden bg-baluarte-luz/5">
-      <AnimatePresence>
-        {!isLoaded && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-10"
-          >
-            <motion.div
-              animate={{ backgroundColor: ["#F3EFE6", "#E8D9C5", "#F3EFE6"] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-full h-full"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className={`relative w-full h-full overflow-hidden ${!isLoaded ? 'animate-pulse bg-[#F3EFE6]' : ''}`}>
       <img
         src={src}
         alt={alt}
+        loading="lazy"
         onLoad={() => setIsLoaded(true)}
-        className={`${className} ${objectFit} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000`}
+        className={`${className} ${objectFit} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
       />
     </div>
   )
@@ -72,7 +59,6 @@ export default function ShopTeaser({ products }) {
     return 100
   }
 
-  // Lógica de Swipe
   const swipeConfidenceThreshold = 10000;
   const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 
@@ -103,7 +89,6 @@ export default function ShopTeaser({ products }) {
           )}
         </div>
 
-        {/* touchAction pan-y permite que o scroll vertical do celular funcione livremente */}
         <div className="relative touch-action-pan-y" style={{ touchAction: 'pan-y' }}>
           <motion.div 
             className="flex gap-8 cursor-grab active:cursor-grabbing"
@@ -112,31 +97,25 @@ export default function ShopTeaser({ products }) {
             dragElastic={0.15}
             onDragEnd={(e, { offset, velocity }) => {
               const swipe = swipePower(offset.x, velocity.x);
-              if (swipe < -swipeConfidenceThreshold) {
-                nextSlide();
-              } else if (swipe > swipeConfidenceThreshold) {
-                prevSlide();
-              }
+              if (swipe < -swipeConfidenceThreshold) nextSlide();
+              else if (swipe > swipeConfidenceThreshold) prevSlide();
             }}
             animate={{ x: `calc(-${currentIndex * getStep()}% - ${currentIndex * 2}rem)` }}
-            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+            transition={{ type: "spring", stiffness: 250, damping: 30 }}
           >
             {products.map((product) => (
               <div 
-                key={product._id || product.title} 
+                key={product._id} 
                 onClick={() => setSelectedProduct(product)} 
-                // Impede seleção de texto ou conflitos de clique durante o arraste
                 onPointerDown={(e) => e.stopPropagation()}
                 className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] shrink-0 group cursor-pointer select-none"
               >
-                <div className="relative aspect-[3/4] bg-white rounded-3xl overflow-hidden mb-6 p-6 flex items-center justify-center border border-baluarte-luz/5 shadow-sm group-hover:shadow-2xl transition-all duration-700 pointer-events-none">
-                  {product.mainImage && (
-                    <SmartImage 
-                      src={urlFor(product.mainImage).width(500).format('webp').url()} 
-                      alt={product.title}
-                      className="w-full h-full group-hover:scale-105 transition-transform duration-700" 
-                    />
-                  )}
+                <div className="relative aspect-[3/4] bg-white rounded-3xl overflow-hidden mb-6 p-6 flex items-center justify-center border border-baluarte-luz/5 shadow-sm group-hover:shadow-2xl transition-all duration-700">
+                  <SmartImage 
+                    src={urlFor(product.mainImage).width(500).format('webp').url()} 
+                    alt={product.title}
+                    className="w-full h-full group-hover:scale-105 transition-transform duration-700" 
+                  />
                   <div className="absolute top-4 right-4 bg-baluarte-vida text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg z-20">
                     R$ {product.price}
                   </div>
@@ -166,24 +145,39 @@ function ProductModal({ product, onClose }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 lg:p-12 overflow-hidden">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-baluarte-text/98 backdrop-blur-2xl" />
+      
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
         className="relative w-full max-w-7xl bg-baluarte-bg md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-full md:h-[85vh]"
       >
-        <button onClick={onClose} className="absolute top-4 right-4 z-[120] p-2 bg-baluarte-vida text-white rounded-full border border-white/10 hover:scale-110 shadow-xl transition-all"><X size={20} /></button>
+        {/* BOTÃO X BLINDADO: Fundo sólido e alto Z-Index */}
+        <button 
+          onClick={(e) => { e.stopPropagation(); onClose(); }} 
+          className="absolute top-4 right-4 z-[150] p-3 bg-baluarte-vida text-white rounded-full border border-white/20 hover:scale-110 shadow-2xl transition-all"
+          style={{ backgroundColor: '#8B2635' }}
+        >
+          <X size={20} strokeWidth={3} />
+        </button>
         
         <div className="w-full md:w-5/12 bg-[#F8F7F4] flex flex-col h-[35vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-baluarte-luz/10">
           <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
             <AnimatePresence mode="wait">
-              <motion.div key={activeImg} className="w-full h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <SmartImage 
-                  src={urlFor(images[activeImg]).width(800).format('webp').url()} 
-                  alt={product.title} 
-                  className="drop-shadow-2xl cursor-zoom-in"
-                  onClick={() => setIsZoomed(true)}
-                />
+              <motion.div key={activeImg} className="w-full h-full flex items-center justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <div onClick={() => setIsZoomed(true)} className="relative group cursor-zoom-in w-full h-full">
+                  <SmartImage 
+                    src={urlFor(images[activeImg]).width(800).format('webp').url()} 
+                    alt={product.title} 
+                    className="drop-shadow-2xl"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="bg-white/90 p-3 rounded-full text-baluarte-vida shadow-xl">
+                      <ZoomIn size={24} />
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             </AnimatePresence>
+
             {images.length > 1 && (
               <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-20">
                 <button onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev - 1 + images.length) % images.length) }} className="p-2 bg-white rounded-full shadow-lg pointer-events-auto hover:bg-baluarte-vida hover:text-white transition-colors"><ChevronLeft size={18} /></button>
@@ -191,6 +185,7 @@ function ProductModal({ product, onClose }) {
               </div>
             )}
           </div>
+          
           <div className="p-3 flex gap-2 justify-center bg-white/50 border-t border-baluarte-luz/5 overflow-x-auto">
             {images.map((img, i) => (
               <button key={i} onClick={() => setActiveImg(i)} className={`w-10 h-14 shrink-0 rounded border-2 transition-all overflow-hidden ${activeImg === i ? 'border-baluarte-luz scale-105 shadow-md' : 'border-transparent opacity-50'}`}>
@@ -272,16 +267,32 @@ function ProductModal({ product, onClose }) {
           </div>
         </div>
       </motion.div>
+
+      {/* OVERLAY DE ZOOM FUNCIONAL */}
       <AnimatePresence>
         {isZoomed && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[200] bg-baluarte-text/95 flex items-center justify-center p-4 cursor-zoom-out" onClick={() => setIsZoomed(false)}>
-            <div className="max-w-full max-h-full">
-               <SmartImage 
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="fixed inset-0 z-[200] bg-baluarte-text/98 flex items-center justify-center p-4 cursor-zoom-out" 
+            onClick={() => setIsZoomed(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.8, y: 20 }} 
+              animate={{ scale: 1, y: 0 }} 
+              exit={{ scale: 0.8, y: 20 }}
+              className="max-w-full max-h-full flex items-center justify-center relative"
+            >
+               <img 
                  src={urlFor(images[activeImg]).url()} 
                  alt="zoom" 
-                 className="shadow-2xl" 
+                 className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-xl" 
                />
-            </div>
+               <button className="absolute top-0 right-0 -mt-12 text-white/60 hover:text-white flex items-center gap-2 text-xs uppercase tracking-widest font-bold">
+                 Clique para fechar <X size={16} />
+               </button>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
