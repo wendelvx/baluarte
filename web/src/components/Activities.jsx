@@ -21,7 +21,7 @@ function SmartImage({ src, alt, className }) {
   )
 }
 
-export default function Activities({ projects }) {
+export default function Activities({ projects, volunteerFormUrl }) {
   const [selectedProject, setSelectedProject] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerPage, setItemsPerPage] = useState(3)
@@ -125,13 +125,19 @@ export default function Activities({ projects }) {
       </div>
 
       <AnimatePresence>
-        {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
+        {selectedProject && (
+          <ProjectModal 
+            project={selectedProject} 
+            onClose={() => setSelectedProject(null)} 
+            volunteerFormUrl={volunteerFormUrl}
+          />
+        )}
       </AnimatePresence>
     </section>
   )
 }
 
-function ProjectModal({ project, onClose }) {
+function ProjectModal({ project, onClose, volunteerFormUrl }) {
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 md:p-8">
       <motion.div 
@@ -146,47 +152,59 @@ function ProjectModal({ project, onClose }) {
         initial={{ opacity: 0, scale: 0.95 }} 
         animate={{ opacity: 1, scale: 1 }} 
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-5xl bg-baluarte-bg rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-full max-h-[90vh] z-[160]"
+        className="relative w-full max-w-5xl bg-baluarte-bg rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-full max-h-[85vh] md:max-h-[80vh] z-[160]"
       >
-        {/* BOTÃO X BLINDADO: Aumentei o z-index e forcei o fundo sólido da marca com fallback */}
         <button 
           onClick={(e) => {
             e.stopPropagation();
             onClose();
           }}
-          className="absolute top-6 right-6 z-[200] p-4 bg-baluarte-vida text-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all flex items-center justify-center border border-white/30"
-          style={{ backgroundColor: '#8B2635' }} // Fallback manual para o vinho da Baluarte se a classe falhar
+          className="absolute top-6 right-6 z-[200] p-3 md:p-4 bg-baluarte-vida text-white rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all flex items-center justify-center border border-white/20"
+          style={{ backgroundColor: '#8B2635' }}
           aria-label="Fechar"
         >
-          <X size={24} strokeWidth={3} className="text-white" />
+          <X size={20} strokeWidth={3} className="text-white" />
         </button>
 
-        <div className="w-full md:w-1/2 h-72 md:h-auto relative shrink-0">
+        {/* Lado da Imagem: Ocupa metade e mantém o aspecto */}
+        <div className="w-full md:w-1/2 h-48 md:h-auto relative shrink-0">
           <SmartImage src={urlFor(project.mainImage).width(1000).format('webp').url()} alt={project.title} className="absolute inset-0 w-full h-full" />
-          <div className="absolute inset-0 bg-gradient-to-t from-baluarte-bg via-baluarte-bg/20 to-transparent md:hidden" />
+          <div className="absolute inset-0 bg-gradient-to-t from-baluarte-bg via-transparent to-transparent md:hidden" />
         </div>
 
-        <div className="w-full md:w-1/2 p-8 md:p-16 overflow-y-auto bg-baluarte-bg">
-          <div className="space-y-8">
-            <header>
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-baluarte-luz/10 text-baluarte-luz text-[10px] font-bold uppercase tracking-widest mb-4">
-                <Info size={12} /> Impacto Real
-              </span>
-              <h2 className="text-4xl md:text-5xl font-serif text-baluarte-vida leading-tight">{project.title}</h2>
-            </header>
+        {/* Lado do Conteúdo: Flexbox para manter footer fixo no fundo */}
+        <div className="w-full md:w-1/2 flex flex-col h-full bg-baluarte-bg overflow-hidden">
+          
+          {/* Header Fixo */}
+          <div className="p-8 md:p-12 pb-4 md:pb-6">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-baluarte-luz/10 text-baluarte-luz text-[9px] font-bold uppercase tracking-widest mb-4">
+              <Info size={10} /> Impacto Real
+            </span>
+            <h2 className="text-3xl md:text-4xl font-serif text-baluarte-vida leading-tight">{project.title}</h2>
+          </div>
 
-            <div className="text-baluarte-text/80 font-sans text-base leading-relaxed">
-              <p className="font-bold text-baluarte-vida mb-8 border-l-2 border-baluarte-luz pl-4 italic">{project.summary}</p>
-              <div className="prose prose-baluarte max-w-none antialiased">
+          {/* Área de Texto com Scroll Minimalista */}
+          <div className="flex-1 overflow-y-auto px-8 md:px-12 pb-6 scrollbar-hide">
+            <div className="text-baluarte-text/80 font-sans text-sm md:text-base leading-relaxed space-y-6">
+              <p className="font-bold text-baluarte-vida border-l-2 border-baluarte-luz pl-4 italic">
+                {project.summary}
+              </p>
+              <div className="prose prose-sm prose-baluarte max-w-none antialiased opacity-90">
                 <PortableText value={project.description} />
               </div>
             </div>
+          </div>
 
-            <footer className="pt-8 border-t border-baluarte-luz/10">
-              <button onClick={onClose} className="w-full px-8 py-5 rounded-full bg-baluarte-vida text-white font-bold text-xs uppercase tracking-widest shadow-lg flex items-center justify-center gap-3">
-                Apoiar este propósito <ArrowRight size={14} />
-              </button>
-            </footer>
+          {/* Footer Fixo */}
+          <div className="p-8 md:p-12 pt-4 border-t border-baluarte-luz/10 bg-baluarte-bg">
+            <a 
+              href={volunteerFormUrl || "#"} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full px-8 py-4 md:py-5 rounded-full bg-baluarte-vida text-white font-bold text-[10px] md:text-xs uppercase tracking-widest shadow-lg flex items-center justify-center gap-3 transition-all hover:bg-baluarte-vida/90 active:scale-95"
+            >
+              Apoiar este propósito <ArrowRight size={14} />
+            </a>
           </div>
         </div>
       </motion.div>

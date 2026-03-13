@@ -82,7 +82,7 @@ function App() {
       <Header logo={homeData.logo} conm={homeData.conmSection} />
 
       <main>
-        {/* 1. Hero: Agora recebe donationFlows para o link de voluntário */}
+        {/* 1. Hero */}
         {homeData.carouselImages?.length > 0 && (
           <Hero 
             images={homeData.carouselImages} 
@@ -93,8 +93,11 @@ function App() {
         {/* 2. Manifesto */}
         <Manifesto essence={homeData.essence} />
 
-        {/* 3. Activities */}
-        <Activities projects={homeData.featuredProjects} />
+        {/* 3. Activities: AGORA RECEBENDO O LINK DO FORMULÁRIO */}
+        <Activities 
+          projects={homeData.featuredProjects} 
+          volunteerFormUrl={homeData.donationFlows?.volunteerFormUrl} 
+        />
 
         {/* 4. Volunteer Call */}
         <VolunteerCall flows={homeData.donationFlows} />

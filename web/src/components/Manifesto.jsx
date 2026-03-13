@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
+import {
   BookOpen, Heart, Users, Stethoscope, GraduationCap, Handshake, Sparkles,
-  Target, Compass, ShieldCheck 
+  Target, Compass, ShieldCheck
 } from 'lucide-react'
 
 const atuacoes = [
@@ -60,10 +60,10 @@ export default function Manifesto({ essence }) {
   return (
     <section id="about" className="py-24 md:py-32 bg-baluarte-bg overflow-hidden">
       <div className="max-w-7xl mx-auto px-8">
-        
+
         {/* 1. Cabeçalho Narrative */}
         <div className="flex flex-col md:flex-row gap-12 mb-20 items-start">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -76,8 +76,8 @@ export default function Manifesto({ essence }) {
               <span className="italic text-baluarte-luz">propósito que escolhemos proteger.</span>
             </h2>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -86,7 +86,7 @@ export default function Manifesto({ essence }) {
           >
             <p>
               "No bater de cada pequeno coração, protegemos a vida e a pureza de cada criança que abraçamos. <br />
-              <span className="text-baluarte-vida font-bold">Propósitos sagrados que florescem para o amanhã.</span>"
+              <span className="text-baluarte-vida font-bold">Propósitos que florescem para o amanhã.</span>"
             </p>
           </motion.div>
         </div>
@@ -95,14 +95,14 @@ export default function Manifesto({ essence }) {
         {essence && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-28">
             {Object.entries(essence).map(([key, value]) => (
-              <div 
-                key={key} 
+              <div
+                key={key}
                 className="flex flex-col items-center text-center p-10 md:p-12 bg-white/60 rounded-[2.5rem] border border-baluarte-luz/10 shadow-sm transition-all hover:shadow-md"
               >
                 <div className="text-baluarte-luz mb-8 bg-baluarte-bg p-4 rounded-2xl shadow-inner">
                   {essenceIcons[key]}
                 </div>
-                
+
                 <div className="w-full">
                   <h4 className="font-serif text-3xl text-baluarte-vida capitalize mb-6">
                     {key === 'mission' ? 'Missão' : key === 'vision' ? 'Visão' : 'Valores'}
@@ -110,22 +110,21 @@ export default function Manifesto({ essence }) {
 
                   {/* SOLUÇÃO ELEGANTE PARA VALORES: Grade Simétrica com Marcadores */}
                   {key === 'values' ? (
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-3 max-w-[280px] mx-auto">
-                      {value.split(/[ ,;]+/).filter(v => v.length > 0).map((val, i) => (
-                        <div key={i} className="flex items-center gap-2 group">
-                          {/* Marcador Minimalista */}
-                          <div className="w-1.5 h-1.5 rotate-45 bg-baluarte-luz rounded-[1px] shrink-0" />
-                          <span className="text-[11px] md:text-xs uppercase tracking-wider text-baluarte-vida font-sans font-bold text-left leading-none">
-                            {val}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm md:text-base text-baluarte-text/70 leading-relaxed font-sans font-medium">
-                      {value}
-                    </p>
-                  )}
+  <div className="grid grid-cols-2 gap-x-4 gap-y-3 max-w-[280px] mx-auto">
+    {value.split(',').map(v => v.trim()).filter(v => v.length > 0).map((val, i) => (
+      <div key={i} className="flex items-center gap-2 group">
+        <div className="w-1.5 h-1.5 rotate-45 bg-baluarte-luz rounded-[1px] shrink-0" />
+        <span className="text-[11px] md:text-xs uppercase tracking-wider text-baluarte-vida font-sans font-bold text-left leading-none">
+          {val}
+        </span>
+      </div>
+    ))}
+  </div>
+) : (
+  <p className="text-sm md:text-base text-baluarte-text/70 leading-relaxed font-sans font-medium">
+    {value}
+  </p>
+)}
                 </div>
               </div>
             ))}
@@ -134,8 +133,8 @@ export default function Manifesto({ essence }) {
 
         {/* 3. Título dos Pilares */}
         <div className="mb-12 text-center md:text-left">
-           <span className="text-baluarte-luz font-sans text-[10px] tracking-[0.4em] uppercase font-bold mb-2 block">Nossas Frentes</span>
-           <h3 className="text-3xl font-serif text-baluarte-vida">Pilares de Atuação</h3>
+          <span className="text-baluarte-luz font-sans text-[10px] tracking-[0.4em] uppercase font-bold mb-2 block">Nossas Frentes</span>
+          <h3 className="text-3xl font-serif text-baluarte-vida">Pilares de Atuação</h3>
         </div>
 
         {/* Grid de Cards Interativos */}
@@ -153,7 +152,7 @@ function CardImpacto({ item, index }) {
   const [isTapped, setIsTapped] = useState(false);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -163,7 +162,7 @@ function CardImpacto({ item, index }) {
     >
       <AnimatePresence mode="wait">
         {!isTapped ? (
-          <motion.div 
+          <motion.div
             key="front"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -183,7 +182,7 @@ function CardImpacto({ item, index }) {
             </div>
           </motion.div>
         ) : (
-          <motion.div 
+          <motion.div
             key="back"
             initial={{ opacity: 0, scale: 1.1 }}
             animate={{ opacity: 1, scale: 1 }}

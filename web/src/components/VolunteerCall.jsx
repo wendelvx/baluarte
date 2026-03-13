@@ -54,8 +54,8 @@ export default function VolunteerCall({ flows }) {
             </div>
 
             <h2 className="text-4xl md:text-6xl font-serif text-baluarte-vida mb-8 leading-[1.1]">
-              Não mude o mundo. <br />
-              <span className="italic text-baluarte-luz">Mude o mundo de alguém.</span>
+              Missão Baluarte. <br />
+              <span className="italic text-baluarte-luz">Chamados para transformar vidas.</span>
             </h2>
 
             <div className="space-y-6 text-lg text-baluarte-text/80 font-sans leading-relaxed mb-12">
@@ -92,7 +92,9 @@ export default function VolunteerCall({ flows }) {
                   onClick={() => setShowPixModal(true)}
                   className="flex items-center gap-4 p-5 bg-baluarte-bg rounded-2xl border border-baluarte-luz/10 hover:border-baluarte-luz transition-all text-left"
                 >
-                  <Sparkles className="w-5 h-5 text-baluarte-luz" />
+                  <span className="w-10 h-10 flex items-center justify-center rounded-full bg-white">
+                    <Sparkles className="w-5 h-5 text-baluarte-luz" />
+                  </span>
                   <div>
                     <p className="text-[9px] uppercase tracking-widest font-bold text-baluarte-vida/60">Via PIX</p>
                     <p className="font-serif text-baluarte-vida">Doação Financeira</p>
@@ -105,7 +107,9 @@ export default function VolunteerCall({ flows }) {
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-5 bg-baluarte-bg rounded-2xl border border-baluarte-luz/10 hover:border-baluarte-luz transition-all text-left"
                 >
-                  <Utensils className="w-5 h-5 text-baluarte-luz" />
+                  <span className="w-10 h-10 flex items-center justify-center rounded-full bg-white">
+                    <Utensils className="w-5 h-5 text-baluarte-luz" />
+                  </span>
                   <div>
                     <p className="text-[9px] uppercase tracking-widest font-bold text-baluarte-vida/60">Sustento</p>
                     <p className="font-serif text-baluarte-vida">Doar Alimentos</p>
